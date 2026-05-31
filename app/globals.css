@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+@keyframes marquee-l {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+
+@keyframes marquee-r {
+  from {
+    transform: translateX(-33.333%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.marquee-l {
+  animation: marquee-l 40s linear infinite;
+}
+
+.marquee-r {
+  animation: marquee-r 40s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-l,
+  .marquee-r {
+    animation: none;
+  }
+}

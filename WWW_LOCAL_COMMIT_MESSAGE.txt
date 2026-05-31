@@ -1,0 +1,19 @@
+feat(www): add Next.js marketing site with landing sections and beta gate
+
+Introduce enscribe-www as a separate Next.js App Router app from the Vite
+product (app.enscribe.online), so marketing can ship on enscribe.online
+without sharing the app bundle or port 3000.
+
+- Scaffold Next 15, Tailwind 4, fonts, and dev server on port 3002
+- Port marketing landing from the app repo into sectioned components
+- Extract shared LandingHeader; routes for /, /landing-page, /landing-page-2
+- AppLink CTAs via NEXT_PUBLIC_APP_URL (defaults to app.enscribe.online)
+- BetaOnly gated by NEXT_PUBLIC_BETA_ONLY (no entitlements/API); wrap preview routes
+- Document setup and env in README; .env.local stays gitignored
+
+Do not stage: .env.local, node_modules, .next, WWW_LOCAL_COMMIT_MESSAGE.txt
+
+Suggested stage:
+
+  git add .gitignore package.json package-lock.json next.config.mjs postcss.config.mjs jsconfig.json app/ components/ lib/ public/ README.md
+  git add "enscribe-icon2 1.svg"   # optional if you want the root asset kept
