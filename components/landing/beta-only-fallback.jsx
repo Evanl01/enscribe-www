@@ -4,7 +4,7 @@ export function BetaOnlyFallback() {
   return (
     <div className="mx-auto max-w-md px-5 py-16 text-center text-[#3C4C78]">
       <p className="text-base">
-        This page is not available in the current web experience.
+        This page is under construction and will be available soon.
       </p>
       <Link
         href="/"
