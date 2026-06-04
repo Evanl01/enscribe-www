@@ -19,7 +19,7 @@ export function PricingSection() {
             >
               Priced to help you
               <br />
-              <span className="text-[#3166F7]">thrive</span>
+              <span className="text-[#3166F7]">care</span>
             </h2>
             <p className="mt-5 text-[#3C4C78]">
               With EnScribe, small and midsized clinics get the technology and support of big orgs

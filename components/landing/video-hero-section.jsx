@@ -1,61 +1,91 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { AppLink } from "@/components/landing/app-link";
 import { SERIF } from "@/components/landing/constants";
 
-/** Full-bleed video backdrop styled to feel like a real <video> autoplay. */
+const POSTER = "/videos/hero-poster.webp";
+const DESKTOP_MP4 = "/videos/hero-desktop.mp4";
+const DESKTOP_WEBM = "/videos/hero-desktop.webm";
+const MOBILE_MP4 = "/videos/hero-mobile.mp4";
+
+/** Toggle to compare raw iMovie export vs processed encodes. Revert before shipping. */
+const USE_RAW_SOURCE_FOR_TEST = true;
+const RAW_SOURCE_MP4 = "/videos/hero-source-test.mp4";
+
+function shouldLoadVideo() {
+  if (typeof window === "undefined") return false;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+  if (navigator.connection?.saveData) return false;
+  return true;
+}
+
+/** Full-bleed looping hero video — poster first, deferred load for LCP. */
 function HeroVideoBackdrop() {
+  const videoRef = useRef(null);
+  const [loadVideo, setLoadVideo] = useState(false);
+  const [videoVisible, setVideoVisible] = useState(false);
+
+  useEffect(() => {
+    if (!shouldLoadVideo()) return;
+
+    const start = () => setLoadVideo(true);
+    if ("requestIdleCallback" in window) {
+      const id = requestIdleCallback(start, { timeout: 2000 });
+      return () => cancelIdleCallback(id);
+    }
+
+    const timer = setTimeout(start, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!loadVideo || !videoRef.current) return;
+    void videoRef.current.play().catch(() => {});
+  }, [loadVideo]);
+
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#0B1A47]">
-      {/* Faux video poster — replace with <video autoPlay muted loop playsInline poster="…" /> */}
-      <div
-        className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(124,157,249,0.45),transparent_60%),radial-gradient(circle_at_80%_70%,rgba(49,102,247,0.40),transparent_55%),linear-gradient(135deg,#0B1A47_0%,#14285F_55%,#183278_100%)]"
+      <img
+        src={POSTER}
+        alt=""
         aria-hidden
+        fetchPriority="high"
+        className="absolute inset-0 h-full w-full object-cover"
       />
 
-      {/* Subtle grain / scanline accent for "video" feel */}
-      <div
-        className="absolute inset-0 opacity-[0.06] mix-blend-overlay"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(0deg, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 1px, transparent 1px, transparent 3px)",
-        }}
-        aria-hidden
-      />
-
-      {/* Center play affordance — placeholder hint that this is the hero video */}
-      <button
-        type="button"
-        aria-label="Play product video"
-        className="group absolute right-[8%] top-1/2 hidden -translate-y-1/2 items-center justify-center rounded-full bg-white/95 shadow-[0_25px_60px_rgba(11,26,71,0.55)] transition hover:scale-105 md:flex md:h-24 md:w-24 lg:h-28 lg:w-28"
-      >
-        <svg viewBox="0 0 24 24" className="ml-1 h-10 w-10 fill-[#183278]" aria-hidden>
-          <path d="M8 5v14l11-7z" />
-        </svg>
-      </button>
-
-      {/* Faux progress bar bottom-right */}
-      <div className="absolute bottom-6 right-6 hidden items-center gap-3 rounded-lg bg-black/35 px-3 py-2 backdrop-blur md:flex">
-        <span className="h-1.5 w-40 overflow-hidden rounded-full bg-white/15">
-          <span className="block h-full w-[38%] rounded-full bg-white/80" />
-        </span>
-        <span className="text-[10px] font-medium text-white/80">0:34 / 1:28</span>
-      </div>
+      {loadVideo ? (
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster={POSTER}
+          onCanPlay={() => setVideoVisible(true)}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+            videoVisible ? "opacity-100" : "opacity-0"
+          }`}
+          aria-hidden
+        >
+          {USE_RAW_SOURCE_FOR_TEST ? (
+            <source src={RAW_SOURCE_MP4} type="video/mp4" />
+          ) : (
+            <>
+              <source src={MOBILE_MP4} media="(max-width: 767px)" type="video/mp4" />
+              <source src={DESKTOP_WEBM} type="video/webm" />
+              <source src={DESKTOP_MP4} type="video/mp4" />
+            </>
+          )}
+        </video>
+      ) : null}
 
       {/* Readability gradient — darker on the left so the copy pops */}
       <div
         className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,18,52,0.85)_0%,rgba(8,18,52,0.65)_38%,rgba(8,18,52,0.25)_65%,rgba(8,18,52,0.05)_100%)]"
         aria-hidden
       />
-
-      {/* Spec tag — describes the asset we want to ship */}
-      <div className="absolute left-6 top-6 rounded-md border border-white/15 bg-[#0B1A47]/70 px-3 py-2 backdrop-blur">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-[#7C9DF9]">Hero video</p>
-        <p className="mt-0.5 max-w-xs text-[11px] leading-snug text-white/80">
-          Looping 60–90s product demo: clinician finishes a visit, opens EnScribe, the note appears,
-          one-click push to EHR. Muted, autoplay, with a reduce-motion poster.
-        </p>
-      </div>
     </div>
   );
 }
@@ -86,7 +116,7 @@ export function VideoHeroSection() {
               with <span className="text-[#7C9DF9]">one click.</span>
             </h1>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-white/85">
-              EnScribe frees up time in your day so you can care about what matters most – Your patients.
+              EnScribe frees up time in your day so you can care about what matters most – Your patients.
             </p>
             <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
               <AppLink
