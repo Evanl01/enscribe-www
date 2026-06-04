@@ -9,8 +9,8 @@ const DESKTOP_MP4 = "/videos/hero-desktop.mp4";
 const DESKTOP_WEBM = "/videos/hero-desktop.webm";
 const MOBILE_MP4 = "/videos/hero-mobile.mp4";
 
-/** Toggle to compare raw iMovie export vs processed encodes. Revert before shipping. */
-const USE_RAW_SOURCE_FOR_TEST = true;
+/** Toggle to compare raw iMovie export vs processed encodes (file is gitignored; keep false in prod). */
+const USE_RAW_SOURCE_FOR_TEST = false;
 const RAW_SOURCE_MP4 = "/videos/hero-source-test.mp4";
 
 function shouldLoadVideo() {
