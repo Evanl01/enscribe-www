@@ -82,7 +82,13 @@ export function FeatureAccordionSection() {
                       <div className="pb-6 lg:hidden">
                         <FeatureVisual
                           feature={active}
-                          aspect={active.imageSrc ? "aspect-[3/4]" : "aspect-video"}
+                          aspect={
+                            active.media === "mockup"
+                              ? "aspect-video"
+                              : active.imageSrc
+                                ? "aspect-[3/4]"
+                                : "aspect-video"
+                          }
                         />
                       </div>
                     </div>
@@ -95,7 +101,10 @@ export function FeatureAccordionSection() {
           {/* Synced sticky visual */}
           <div className="hidden lg:block">
             <div className="sticky top-24">
-              <FeatureVisual feature={active} aspect="aspect-[4/3]" />
+              <FeatureVisual
+                feature={active}
+                aspect={active.media === "mockup" ? "aspect-video" : "aspect-[4/3]"}
+              />
             </div>
           </div>
         </div>

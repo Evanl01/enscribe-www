@@ -8,7 +8,13 @@ const LOGO_SRC = "/enscribe-icon.svg";
 
 export function LandingHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[#183278]/10 bg-[#F9FAFF]/90 backdrop-blur-md">
+    <header
+      className="sticky top-0 z-50 border-b border-[#183278]/10 bg-[#F9FAFF]/90 backdrop-blur-md"
+      style={{
+        boxShadow:
+          "0 4px 6px -1px rgba(11, 26, 71, 0.08), 0 12px 28px -4px rgba(11, 26, 71, 0.18)",
+      }}
+    >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
         <Link
           href="/"

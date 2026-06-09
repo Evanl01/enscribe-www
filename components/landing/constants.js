@@ -12,10 +12,10 @@ export const FEATURES = [
       "Turn patient conversations into clear, accurate notes — so you can focus on delivering excellent care.",
     label: "Active encounter capture",
     spec: "Screenshot/loop: live waveform, partial SOAP note populating as the visit progresses.",
-    media: "image",
-    imageSrc: "/images/marketing_ambient-scribe.png",
+    media: "mockup",
+    mockupKey: "ambientScribe",
     imageAlt:
-      "EnScribe mobile app on the recording screen, ready to start capturing a patient visit",
+      "EnScribe mobile app actively recording a patient visit with live waveform",
   },
   {
     key: "ehr",

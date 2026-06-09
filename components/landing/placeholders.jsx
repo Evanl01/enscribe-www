@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { AmbientScribeMockup } from "@/components/landing/ambient-scribe-mockup";
 
 /** Real product screenshot — centered in a branded frame (portrait phone assets). */
 export function FeatureScreenshot({
@@ -30,7 +31,31 @@ export function FeatureScreenshot({
   );
 }
 
+/** Code mockup frame — no background; child scales with object-contain behavior. */
+export function FeatureMockup({ alt, aspect = "aspect-[4/3]", className = "", children }) {
+  return (
+    <figure className={`relative ${className}`} aria-label={alt}>
+      <div className={`relative flex w-full items-center justify-center ${aspect}`}>
+        <div className="relative h-full w-full pointer-events-none">{children}</div>
+      </div>
+    </figure>
+  );
+}
+
 export function FeatureVisual({ feature, aspect, className = "" }) {
+  if (feature.media === "mockup" && feature.mockupKey === "ambientScribe") {
+    return (
+      <FeatureMockup
+        key={feature.key}
+        alt={feature.imageAlt ?? feature.title}
+        aspect={aspect}
+        className={className}
+      >
+        <AmbientScribeMockup />
+      </FeatureMockup>
+    );
+  }
+
   if (feature.imageSrc) {
     return (
       <FeatureScreenshot
