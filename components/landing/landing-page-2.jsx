@@ -19,7 +19,8 @@ export function LandingPage2() {
       <LandingHeader />
       <main className="relative">
         <VideoHeroSection />
-        <div className="relative z-10">
+        {/* No bg on wrapper — hero must show through FeatureAccordion rounded top corners */}
+        <div className="relative isolate z-[1]">
           <FeatureAccordionSection />
           <SmallPracticesSection />
           <ClinicianQuoteBands />

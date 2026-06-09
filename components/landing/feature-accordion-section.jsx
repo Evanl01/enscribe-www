@@ -1,8 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { FEATURES, SERIF } from "@/components/landing/constants";
-import { VideoPlaceholder, VisualPlaceholder } from "@/components/landing/placeholders";
+import {
+  FEATURES,
+  HERO_SECTION_OVERLAP_PX,
+  HERO_SECTION_TOP_RADIUS_PX,
+  SERIF,
+} from "@/components/landing/constants";
+import { FeatureVisual } from "@/components/landing/placeholders";
 
 export function FeatureAccordionSection() {
   const [activeKey, setActiveKey] = useState(FEATURES[0].key);
@@ -10,21 +15,22 @@ export function FeatureAccordionSection() {
 
   return (
     <section
-      className="relative z-10 border-y border-[#183278]/8 bg-white py-20 shadow-[0_-30px_60px_-30px_rgba(11,26,71,0.45)] sm:py-28"
+      className="relative z-20 overflow-hidden border-b border-[#183278]/8 py-20 sm:py-28"
+      style={{
+        marginTop: -HERO_SECTION_OVERLAP_PX,
+        borderTopLeftRadius: HERO_SECTION_TOP_RADIUS_PX,
+        borderTopRightRadius: HERO_SECTION_TOP_RADIUS_PX,
+        backgroundColor: "#ffffff",
+        boxShadow: "0 -20px 50px -20px rgba(11, 26, 71, 0.35)",
+      }}
     >
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        {/* Oversized stacked headline like Freed */}
         <h2
-          className="text-4xl font-semibold leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl"
+          className="w-full text-3xl font-semibold leading-[1.05] tracking-tight lg:text-[3rem]"
           style={SERIF}
         >
-          From <span className="text-[#3166F7]">first</span>
-          <br />
-          visit to <span className="text-[#3166F7]">last</span>
-          <br />
-          note, EnScribe
-          <br />
-          is by your side.
+          Your <span className="text-[#3166F7]">All-in-One</span> Scribe that will save you{" "}
+          <span className="text-[#3166F7]">hours</span>.
         </h2>
 
         <div className="mt-14 grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
@@ -74,19 +80,10 @@ export function FeatureAccordionSection() {
                       <p className="pb-6 pr-6 text-base leading-relaxed text-[#3C4C78]">{f.blurb}</p>
                       {/* Visual shown inline on small screens (sticky panel handles lg+) */}
                       <div className="pb-6 lg:hidden">
-                        {active.media === "video" ? (
-                          <VideoPlaceholder
-                            aspect="aspect-video"
-                            label={active.label}
-                            spec={active.spec}
-                          />
-                        ) : (
-                          <VisualPlaceholder
-                            aspect="aspect-video"
-                            label={active.label}
-                            spec={active.spec}
-                          />
-                        )}
+                        <FeatureVisual
+                          feature={active}
+                          aspect={active.imageSrc ? "aspect-[3/4]" : "aspect-video"}
+                        />
                       </div>
                     </div>
                   </div>
@@ -98,24 +95,7 @@ export function FeatureAccordionSection() {
           {/* Synced sticky visual */}
           <div className="hidden lg:block">
             <div className="sticky top-24">
-              {active.media === "video" ? (
-                <VideoPlaceholder
-                  key={active.key}
-                  aspect="aspect-[4/3]"
-                  label={active.label}
-                  spec={active.spec}
-                />
-              ) : (
-                <VisualPlaceholder
-                  key={active.key}
-                  aspect="aspect-[4/3]"
-                  label={active.label}
-                  spec={active.spec}
-                />
-              )}
-              <p className="mt-4 text-xs text-[#4B5D99]">
-                Visual swaps when you select a feature — sticky on scroll.
-              </p>
+              <FeatureVisual feature={active} aspect="aspect-[4/3]" />
             </div>
           </div>
         </div>

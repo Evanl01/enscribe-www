@@ -1,3 +1,71 @@
+import Image from "next/image";
+
+/** Real product screenshot — centered in a branded frame (portrait phone assets). */
+export function FeatureScreenshot({
+  src,
+  alt,
+  aspect = "aspect-[4/3]",
+  className = "",
+}) {
+  return (
+    <figure
+      className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#4A7AF5] via-[#3166F7] to-[#0B1A47] shadow-[0_30px_70px_rgba(11,26,71,0.25)] ${className}`}
+    >
+      <div
+        className={`relative flex w-full items-center justify-center ${aspect} px-6 py-8 sm:px-10 sm:py-10`}
+      >
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.18),transparent_55%)]"
+          aria-hidden
+        />
+        <Image
+          src={src}
+          alt={alt}
+          width={740}
+          height={1478}
+          className="relative z-10 h-full max-h-full w-auto max-w-[min(72%,300px)] object-contain drop-shadow-[0_24px_48px_rgba(0,0,0,0.35)]"
+        />
+      </div>
+    </figure>
+  );
+}
+
+export function FeatureVisual({ feature, aspect, className = "" }) {
+  if (feature.imageSrc) {
+    return (
+      <FeatureScreenshot
+        key={feature.key}
+        src={feature.imageSrc}
+        alt={feature.imageAlt ?? feature.title}
+        aspect={aspect}
+        className={className}
+      />
+    );
+  }
+
+  if (feature.media === "video") {
+    return (
+      <VideoPlaceholder
+        key={feature.key}
+        aspect={aspect}
+        label={feature.label}
+        spec={feature.spec}
+        className={className}
+      />
+    );
+  }
+
+  return (
+    <VisualPlaceholder
+      key={feature.key}
+      aspect={aspect}
+      label={feature.label}
+      spec={feature.spec}
+      className={className}
+    />
+  );
+}
+
 /** Image placeholder — dashed frame + caption describing the asset to commission. */
 export function VisualPlaceholder({
   aspect = "aspect-[4/3]",

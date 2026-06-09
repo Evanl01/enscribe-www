@@ -1,5 +1,9 @@
 export const SERIF = { fontFamily: "var(--font-source-serif), Georgia, serif" };
 
+/** Post-hero section pulls up over the video; rounded top sits on the hero. */
+export const HERO_SECTION_OVERLAP_PX = 140;
+export const HERO_SECTION_TOP_RADIUS_PX = 60;
+
 export const FEATURES = [
   {
     key: "ai-scribe",
@@ -8,7 +12,10 @@ export const FEATURES = [
       "Turn patient conversations into clear, accurate notes — so you can focus on delivering excellent care.",
     label: "Active encounter capture",
     spec: "Screenshot/loop: live waveform, partial SOAP note populating as the visit progresses.",
-    media: "video",
+    media: "image",
+    imageSrc: "/images/marketing_ambient-scribe.png",
+    imageAlt:
+      "EnScribe mobile app on the recording screen, ready to start capturing a patient visit",
   },
   {
     key: "ehr",

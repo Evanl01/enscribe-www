@@ -1,19 +1,17 @@
-feat(www): add Next.js marketing site with landing sections and beta gate
+Upgrade landing page 2 hero to 4K and overlap feature section
 
-Introduce enscribe-www as a separate Next.js App Router app from the Vite
-product (app.enscribe.online), so marketing can ship on enscribe.online
-without sharing the app bundle or port 3000.
+Ship sharper hero media and a more polished scroll handoff on /landing-page-2:
+the feature accordion now rides up over the video with rounded top corners,
+hero copy/CTAs are repositioned for mobile vs desktop, and the AI scribe
+accordion panel shows a real product screenshot instead of a placeholder.
 
-- Scaffold Next 15, Tailwind 4, fonts, and dev server on port 3002
-- Port marketing landing from the app repo into sectioned components
-- Extract shared LandingHeader; routes for /, /landing-page, /landing-page-2
-- AppLink CTAs via NEXT_PUBLIC_APP_URL (defaults to app.enscribe.online)
-- BetaOnly gated by NEXT_PUBLIC_BETA_ONLY (no entitlements/API); wrap preview routes
-- Document setup and env in README; .env.local stays gitignored
+- Replace legacy hero assets with 4K (and 1080p) encodes + poster; point
+  preload and VideoHeroSection at hero-*-4k paths
+- Add HERO_SECTION_OVERLAP_PX / HERO_SECTION_TOP_RADIUS_PX; pull feature
+  section over hero; keep hero visible through rounded corners
+- Reflow hero overlay: headline top-left, CTAs bottom-right on md+, trust
+  badges bottom-left on md+; fix scrim via inline gradient
+- Add FeatureScreenshot / FeatureVisual; wire ambient-scribe marketing image
+  for the AI scribe feature; refresh accordion headline copy
+- Gitignore local source masters (4K / upscaled hero exports)
 
-Do not stage: .env.local, node_modules, .next, WWW_LOCAL_COMMIT_MESSAGE.txt
-
-Suggested stage:
-
-  git add .gitignore package.json package-lock.json next.config.mjs postcss.config.mjs jsconfig.json app/ components/ lib/ public/ README.md
-  git add "enscribe-icon2 1.svg"   # optional if you want the root asset kept

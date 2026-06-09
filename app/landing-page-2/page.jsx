@@ -10,7 +10,7 @@ export const metadata = {
 export default function LandingPage2Route() {
   return (
     <>
-      <link rel="preload" as="image" href="/videos/hero-poster.webp" type="image/webp" />
+      <link rel="preload" as="image" href="/videos/hero-poster-4k.webp" type="image/webp" />
       <BetaOnly fallback={<BetaOnlyFallback />}>
         <LandingPage2 />
       </BetaOnly>
