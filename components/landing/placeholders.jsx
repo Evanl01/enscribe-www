@@ -1,5 +1,8 @@
 import Image from "next/image";
-import { AmbientScribeMockup } from "@/components/landing/ambient-scribe-mockup";
+import { AiScribeFeatureMockup } from "@/components/landing/ambient-scribe-mockup";
+import { BillingSuggestionsFeatureMockup } from "@/components/landing/billing-suggestions-mockup";
+import { NoteEhrPushFeatureMockup } from "@/components/landing/note-ehr-push-mockup";
+import { VisitPrepFeatureMockup } from "@/components/landing/visit-prep-mockup";
 
 /** Real product screenshot — centered in a branded frame (portrait phone assets). */
 export function FeatureScreenshot({
@@ -31,13 +34,22 @@ export function FeatureScreenshot({
   );
 }
 
-/** Code mockup frame — no background; child scales with object-contain behavior. */
-export function FeatureMockup({ alt, aspect = "aspect-[4/3]", className = "", children }) {
+/** Code mockup frame — inline aspect-ratio so the box never collapses (all children are absolute). */
+export function FeatureMockup({ alt, ratio = "4 / 3", className = "", children }) {
   return (
-    <figure className={`relative ${className}`} aria-label={alt}>
-      <div className={`relative flex w-full items-center justify-center ${aspect}`}>
-        <div className="relative h-full w-full pointer-events-none">{children}</div>
+    <figure className={`relative m-0 w-full p-0 ${className}`} aria-label={alt}>
+      <div className="relative m-0 w-full p-0" style={{ aspectRatio: ratio }}>
+        <div className="pointer-events-none absolute inset-0 m-0 p-0">{children}</div>
       </div>
+    </figure>
+  );
+}
+
+/** Mockup frame sized by content — no fixed aspect ratio. */
+export function FeatureMockupNatural({ alt, className = "", children }) {
+  return (
+    <figure className={`relative m-0 w-full p-0 ${className}`} aria-label={alt}>
+      {children}
     </figure>
   );
 }
@@ -48,11 +60,47 @@ export function FeatureVisual({ feature, aspect, className = "" }) {
       <FeatureMockup
         key={feature.key}
         alt={feature.imageAlt ?? feature.title}
-        aspect={aspect}
+        ratio={feature.mockupAspect ?? "25 / 18"}
         className={className}
       >
-        <AmbientScribeMockup />
+        <AiScribeFeatureMockup />
       </FeatureMockup>
+    );
+  }
+
+  if (feature.media === "mockup" && feature.mockupKey === "billingSuggestions") {
+    return (
+      <FeatureMockupNatural
+        key={feature.key}
+        alt={feature.imageAlt ?? feature.title}
+        className={className}
+      >
+        <BillingSuggestionsFeatureMockup />
+      </FeatureMockupNatural>
+    );
+  }
+
+  if (feature.media === "mockup" && feature.mockupKey === "visitPrep") {
+    return (
+      <FeatureMockupNatural
+        key={feature.key}
+        alt={feature.imageAlt ?? feature.title}
+        className={className}
+      >
+        <VisitPrepFeatureMockup />
+      </FeatureMockupNatural>
+    );
+  }
+
+  if (feature.media === "mockup" && feature.mockupKey === "noteEhrPush") {
+    return (
+      <FeatureMockupNatural
+        key={feature.key}
+        alt={feature.imageAlt ?? feature.title}
+        className={className}
+      >
+        <NoteEhrPushFeatureMockup />
+      </FeatureMockupNatural>
     );
   }
 

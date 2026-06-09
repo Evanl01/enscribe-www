@@ -15,7 +15,7 @@ export const FEATURES = [
     media: "mockup",
     mockupKey: "ambientScribe",
     imageAlt:
-      "EnScribe mobile app actively recording a patient visit with live waveform",
+      "EnScribe SOAP note populating over an active recording with waveform",
   },
   {
     key: "ehr",
@@ -24,7 +24,10 @@ export const FEATURES = [
       "Transfer notes to the EHR you already use with just one click — saving you time and frustration throughout the day.",
     label: "One-click push to EHR",
     spec: "Screenshot: completed note with “Send to EHR” button, connector chips (Epic, Athena, Elation placeholders).",
-    media: "image",
+    media: "mockup",
+    mockupKey: "noteEhrPush",
+    imageAlt:
+      "EnScribe completed SOAP note with one-click push to Epic EHR",
   },
   {
     key: "prep",
@@ -33,7 +36,10 @@ export const FEATURES = [
       "Get clear patient summaries before the visit and quick clinical answers when questions come up.",
     label: "Pre-visit summary",
     spec: "Screenshot: patient card with history, problem list, last-visit recap, clinical Q&A panel.",
-    media: "image",
+    media: "mockup",
+    mockupKey: "visitPrep",
+    imageAlt:
+      "EnScribe visit prep chat with patient summary and suggested clinical follow-up prompts",
   },
   {
     key: "coding",
@@ -42,7 +48,10 @@ export const FEATURES = [
       "Reduce after-hours work by generating ICD-10 and CPT codes, patient instructions, referral letters, and more.",
     label: "ICD-10 / CPT + letters",
     spec: "Screenshot: suggested codes panel + drafted patient instructions / referral letter.",
-    media: "image",
+    media: "mockup",
+    mockupKey: "billingSuggestions",
+    imageAlt:
+      "EnScribe billing suggestions with ICD-10 and CPT codes overlaid by generated patient instructions and referral letters",
   },
 ];
 

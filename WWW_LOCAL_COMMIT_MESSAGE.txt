@@ -1,17 +1,15 @@
-Upgrade landing page 2 hero to 4K and overlap feature section
+Replace feature accordion screenshots with code mockups
 
-Ship sharper hero media and a more polished scroll handoff on /landing-page-2:
-the feature accordion now rides up over the video with rounded top corners,
-hero copy/CTAs are repositioned for mobile vs desktop, and the AI scribe
-accordion panel shows a real product screenshot instead of a placeholder.
+Show each landing feature as a scaled React mockup instead of static PNGs,
+so the accordion visuals match the product UI and stay sharp at any size.
 
-- Replace legacy hero assets with 4K (and 1080p) encodes + poster; point
-  preload and VideoHeroSection at hero-*-4k paths
-- Add HERO_SECTION_OVERLAP_PX / HERO_SECTION_TOP_RADIUS_PX; pull feature
-  section over hero; keep hero visible through rounded corners
-- Reflow hero overlay: headline top-left, CTAs bottom-right on md+, trust
-  badges bottom-left on md+; fix scrim via inline gradient
-- Add FeatureScreenshot / FeatureVisual; wire ambient-scribe marketing image
-  for the AI scribe feature; refresh accordion headline copy
-- Gitignore local source masters (4K / upscaled hero exports)
-
+- Add mockups for AI scribe (ambient panel + SOAP note), EHR push, visit prep,
+  and billing/coding (ICD/CPT + generated letters); extract shared ScribeNote
+  and GenerateDocuments panels
+- Extend AiScribeFeatureMockup with a composite layout; swap animated waveform
+  for a deterministic seeded static bar chart
+- Wire all four FEATURES entries to mockupKey; remove marketing_ambient-scribe.png
+- Refine accordion layout (2/5 copy, 3/5 sticky visual), min-heights, and
+  per-feature aspect ratios via FeatureMockup / FeatureMockupNatural
+- Add globals.css animations for scribe note cursor blink and EHR push button
+  emphasis; register Tailwind @source for landing components

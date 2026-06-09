@@ -33,22 +33,23 @@ export function FeatureAccordionSection() {
           <span className="text-[#3166F7]">hours</span>.
         </h2>
 
-        <div className="mt-14 grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
-          {/* Accordion column */}
-          <ul className="divide-y divide-[#183278]/10 border-y border-[#183278]/10">
+        <div className="mt-14 grid min-w-0 grid-cols-1 gap-10 lg:grid-cols-5 lg:items-stretch lg:gap-16">
+          {/* Accordion column — 2/5 (40%) */}
+          <ul className="min-w-0 divide-y divide-[#183278]/10 border-y border-[#183278]/10 lg:col-span-2 lg:min-h-[32rem]">
             {FEATURES.map((f) => {
               const isOpen = f.key === activeKey;
               return (
-                <li key={f.key}>
+                <li key={f.key} className="min-w-0">
                   <button
                     type="button"
                     aria-expanded={isOpen}
                     aria-controls={`feature-panel-${f.key}`}
                     onClick={() => setActiveKey(f.key)}
-                    className="flex w-full items-center justify-between gap-4 py-5 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2"
+                    className="flex w-full min-w-0 min-h-[4.5rem] cursor-pointer items-center justify-between gap-4 border-0 bg-transparent text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 sm:min-h-[7.5rem]"
+                    style={{ paddingTop: 10, paddingBottom: 10 }}
                   >
                     <span
-                      className={`text-xl font-semibold transition sm:text-2xl ${
+                      className={`min-w-0 flex-1 pr-2 text-xl font-semibold transition sm:text-2xl ${
                         isOpen ? "text-[#183278]" : "text-[#3C4C78]"
                       }`}
                       style={SERIF}
@@ -68,23 +69,27 @@ export function FeatureAccordionSection() {
                       </svg>
                     </span>
                   </button>
-                  <div
-                    id={`feature-panel-${f.key}`}
-                    role="region"
-                    aria-labelledby={`feature-trigger-${f.key}`}
-                    className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-out ${
-                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                    }`}
-                  >
-                    <div className="min-h-0">
-                      <p className="pb-6 pr-6 text-base leading-relaxed text-[#3C4C78]">{f.blurb}</p>
-                      {/* Visual shown inline on small screens (sticky panel handles lg+) */}
-                      <div className="pb-6 lg:hidden">
+
+                  {isOpen ? (
+                    <div
+                      className="min-w-0 pr-0 lg:pr-8"
+                      style={{ paddingBottom: 15 }}
+                    >
+                      <p
+                        className="text-base leading-relaxed text-[#3C4C78]"
+                        style={{ margin: 0 }}
+                      >
+                        {f.blurb}
+                      </p>
+                      {/* Inline below copy on < lg */}
+                      <div className="mt-4 w-full max-w-full overflow-hidden lg:hidden">
                         <FeatureVisual
                           feature={active}
                           aspect={
                             active.media === "mockup"
-                              ? "aspect-video"
+                              ? active.mockupAspect === "3 / 4"
+                                ? "aspect-[3/4]"
+                                : "aspect-[25/18]"
                               : active.imageSrc
                                 ? "aspect-[3/4]"
                                 : "aspect-video"
@@ -92,18 +97,24 @@ export function FeatureAccordionSection() {
                         />
                       </div>
                     </div>
-                  </div>
+                  ) : null}
                 </li>
               );
             })}
           </ul>
 
-          {/* Synced sticky visual */}
-          <div className="hidden lg:block">
+          {/* Synced sticky visual — desktop only, 3/5 (60%) */}
+          <div className="hidden min-w-0 lg:col-span-3 lg:block">
             <div className="sticky top-24">
               <FeatureVisual
                 feature={active}
-                aspect={active.media === "mockup" ? "aspect-video" : "aspect-[4/3]"}
+                aspect={
+                  active.media === "mockup"
+                    ? active.mockupAspect === "3 / 4"
+                      ? "aspect-[3/4]"
+                      : "aspect-[25/18]"
+                    : "aspect-[4/3]"
+                }
               />
             </div>
           </div>
