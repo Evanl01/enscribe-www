@@ -1,5 +1,19 @@
 export const SERIF = { fontFamily: "var(--font-source-serif), Georgia, serif" };
 
+/** Abstract shapes — fixed to viewport so they stay visible during sticky scroll. */
+export const QUOTES_TESTIMONIALS_BG_STYLE = {
+  backgroundColor: "#F9FAFF",
+  backgroundImage: [
+    "radial-gradient(ellipse 340px 300px at 8% 18%, rgba(124, 157, 249, 0.22), transparent 72%)",
+    "radial-gradient(circle 130px at 86% 22%, rgba(49, 102, 247, 0.18), transparent 70%)",
+    "radial-gradient(ellipse 260px 180px at 42% 58%, rgba(124, 157, 249, 0.16), transparent 68%)",
+    "radial-gradient(ellipse 240px 200px at 14% 82%, rgba(49, 102, 247, 0.14), transparent 70%)",
+  ].join(", "),
+  backgroundRepeat: "no-repeat",
+  backgroundSize: "auto",
+  backgroundAttachment: "fixed",
+};
+
 /**
  * MOBILE-WIP — set to false (or delete MobileWipGate) when mobile landing is ready.
  * Grep: MOBILE_WIP_ENABLED
@@ -69,38 +83,26 @@ export const FEATURES = [
 
 export const PRICING_TIERS = [
   {
-    name: "Starter",
-    monthly: "$39",
-    annual: "$39",
+    name: "Free",
+    price: "$0",
     blurb: "Flexible AI scribe for limited patient volumes.",
     cta: "Try for free",
     href: "/signup",
     highlight: false,
   },
   {
-    name: "Core",
-    monthly: "$79",
-    annual: "$79",
-    blurb: "The best AI scribe for individual clinicians.",
-    cta: "Try for free",
-    href: "/signup",
-    highlight: false,
-  },
-  {
-    name: "Premier",
-    monthly: "$119",
-    annual: "$104",
+    name: "Pro",
+    price: "$49",
     blurb: "Full suite of AI tools and integrations.",
     cta: "Try for free",
     href: "/signup",
     highlight: true,
   },
   {
-    name: "Groups",
-    monthly: "Custom",
-    annual: "Custom",
+    name: "Enterprise",
+    price: "Custom",
     blurb: "All-in-one AI platform for your clinic.",
-    cta: "Talk to sales",
+    cta: "Contact Sales",
     href: "/signup",
     highlight: false,
   },

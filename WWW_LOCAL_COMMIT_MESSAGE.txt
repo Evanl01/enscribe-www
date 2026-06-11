@@ -1,17 +1,12 @@
-Polish landing page 2 layout, content, and mobile preview guardrails
+Add scroll-stacked clinician quotes and simplify pricing on landing page 2
 
-Improve desktop accordion mockup fidelity, refresh downstream marketing sections,
-and steer testers away from unfinished mobile layouts while desktop preview stays clean.
+Deliver a sticky scroll-driven quote deck with real testimonial copy, unify
+the quotes/testimonials backdrop, and refresh pricing to a simpler three-tier model.
 
-- Add mockup-scale.js (computeContainedScale, mockupViewports) and wire fit="contain"
-  through all four feature mockups; lock accordion panel to 640px with figure gutter
-  and feature-accordion-panel CSS
-- Replace small-practices marquee with alphabetical specialty chip cloud (inline pill
-  styles, brand-blue alternation); widen specialties headline; swap in Dentistry and
-  Psychiatry
-- Drop founder story and press sections; unify clinician quote bands on white; set
-  testimonials to off-white; make header fully opaque
-- Add MobileWipGate with MOBILE_WIP_ENABLED flag (matchMedia + inline styles for
-  viewports under 1024px)
-- Update stats figures and clinician quote kicker copy
-- Ignore WWW_LOCAL_COMMIT_MESSAGE.txt locally
+- Rebuild clinician quote bands as a scroll-pinned card stack (ResizeObserver
+  height sync, reduced-motion fallback, portrait + quote grid layout)
+- Add QUOTES_TESTIMONIALS_BG_STYLE and landing-quotes-testimonials-bg for
+  fixed-viewport radial gradients on quote and testimonials sections
+- Wrap VideoHeroSection in h-screen so sticky hero does not bleed into later sections
+- Simplify pricing to Free / Pro / Enterprise tiers; drop monthly/annual toggle
+  and switch grid to three columns with updated subhead copy

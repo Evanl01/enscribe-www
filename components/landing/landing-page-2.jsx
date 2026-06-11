@@ -19,7 +19,10 @@ export function LandingPage2() {
       <MobileWipGate />
       <LandingHeader />
       <main className="relative">
-        <VideoHeroSection />
+        {/* h-screen wrapper limits sticky hero to the first viewport — stops video bleeding into later sections */}
+        <div className="relative z-0 h-screen w-full shrink-0">
+          <VideoHeroSection />
+        </div>
         {/* No bg on wrapper — hero must show through FeatureAccordion rounded top corners */}
         <div className="relative isolate z-[1]">
           <FeatureAccordionSection />

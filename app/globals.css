@@ -2,6 +2,7 @@
 @source "../components/**/*.{js,jsx}";
 @source inline("ehr-push-button-emphasis");
 @source inline("feature-accordion-panel");
+@source inline("landing-quotes-testimonials-bg");
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
@@ -91,11 +92,24 @@
   }
 }
 
-/** Desktop accordion — hard cap so left list and right figure stay the same height. */
+/** Desktop accordion — hard cap so left list and right figure share the same height. */
 @media (min-width: 1024px) {
   .feature-accordion-panel {
     height: var(--feature-panel-h);
     max-height: var(--feature-panel-h);
     min-height: var(--feature-panel-h);
   }
+}
+
+/** Abstract shapes — fixed to viewport; applied inline on quote + testimonials sections. */
+.landing-quotes-testimonials-bg {
+  background-color: #f9faff;
+  background-image:
+    radial-gradient(ellipse 340px 300px at 8% 18%, rgba(124, 157, 249, 0.22), transparent 72%),
+    radial-gradient(circle 130px at 86% 22%, rgba(49, 102, 247, 0.18), transparent 70%),
+    radial-gradient(ellipse 260px 180px at 42% 58%, rgba(124, 157, 249, 0.16), transparent 68%),
+    radial-gradient(ellipse 240px 200px at 14% 82%, rgba(49, 102, 247, 0.14), transparent 70%);
+  background-repeat: no-repeat;
+  background-size: auto;
+  background-attachment: fixed;
 }
