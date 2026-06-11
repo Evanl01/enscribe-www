@@ -23,7 +23,7 @@ export function TestimonialsSection() {
   ];
 
   return (
-    <section className="bg-white py-24">
+    <section className="bg-[#F9FAFF] py-24">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <h2
           className="max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl"

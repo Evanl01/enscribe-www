@@ -9,7 +9,6 @@ export function ClinicianQuoteBands() {
         "I’ve used several AI based scribe programs and this is by far the best of the bunch!",
       name: "Dr. Ramy Mansour",
       role: "Gastroenterology",
-      bg: "bg-white",
     },
     {
       kicker: "Enhanced scribe accuracy",
@@ -17,22 +16,20 @@ export function ClinicianQuoteBands() {
         "It feels as though I have a personal scribe in the background capturing the details.",
       name: "Nadine A Smith",
       role: "PMHNP-BC",
-      bg: "bg-[#F9FAFF]",
     },
     {
-      kicker: "US-based human support",
+      kicker: "Real-time human support",
       quote:
         "The EnScribe team has been quick to address my issues and expedient in solving them. I really appreciate them!",
       name: "Kathleen McCoy",
       role: "NP",
-      bg: "bg-white",
     },
   ];
 
   return (
-    <section aria-label="Clinician quotes">
+    <section className="bg-white" aria-label="Clinician quotes">
       {bands.map((b, i) => (
-        <div key={b.kicker} className={`${b.bg} border-t border-[#183278]/8`}>
+        <div key={b.kicker} className="border-t border-[#183278]/8">
           <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-20 sm:px-8 lg:grid-cols-2 lg:gap-16">
             <div className={i % 2 === 1 ? "lg:order-2" : ""}>
               <p className="text-xs font-bold uppercase tracking-wider text-[#3166F7]">

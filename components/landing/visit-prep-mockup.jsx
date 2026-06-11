@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { SERIF } from "@/components/landing/constants";
+import { computeContainedScale, mockupViewports } from "@/components/landing/mockup-scale";
 
 /** Tweak visit prep copy and styling without touching layout code. */
 export const VISIT_PREP_MOCKUP = {
@@ -299,11 +300,12 @@ export function VisitPrepPanel({ config = VISIT_PREP_MOCKUP }) {
 }
 
 /** Visit prep chat card — scales to fit its container for the accordion visual. */
-export function VisitPrepFeatureMockup({ className = "" }) {
+export function VisitPrepFeatureMockup({ className = "", fit }) {
   const containerRef = useRef(null);
   const panelRef = useRef(null);
   const [scale, setScale] = useState(1);
   const [footprintHeight, setFootprintHeight] = useState(0);
+  const contain = fit === "contain";
 
   useEffect(() => {
     const container = containerRef.current;
@@ -311,10 +313,18 @@ export function VisitPrepFeatureMockup({ className = "" }) {
     if (!container || !panel) return;
 
     const updateScale = () => {
-      const { width } = container.getBoundingClientRect();
-      const targetWidth = Math.min(width, PREP_MAX_WIDTH);
-      setFootprintHeight(panel.offsetHeight);
-      setScale(targetWidth / PREP_CANVAS.width);
+      const rect = container.getBoundingClientRect();
+      const panelHeight = panel.offsetHeight;
+      const { viewport } = mockupViewports({
+        width: PREP_CANVAS.width,
+        height: panelHeight,
+      });
+      const nextScale = contain
+        ? computeContainedScale(rect, viewport)
+        : Math.min(rect.width, PREP_MAX_WIDTH) / viewport.width;
+
+      setFootprintHeight(panelHeight);
+      setScale(nextScale);
     };
 
     updateScale();
@@ -322,31 +332,41 @@ export function VisitPrepFeatureMockup({ className = "" }) {
     ro.observe(container);
     ro.observe(panel);
     return () => ro.disconnect();
-  }, []);
+  }, [contain]);
 
-  const renderedWidth = footprintHeight > 0 ? PREP_CANVAS.width * scale : undefined;
-  const scaledHeight = footprintHeight > 0 ? footprintHeight * scale : undefined;
+  const viewports =
+    footprintHeight > 0
+      ? mockupViewports({ width: PREP_CANVAS.width, height: footprintHeight })
+      : null;
+  const scaledWidth = viewports ? Math.ceil(viewports.viewport.width * scale) : undefined;
+  const scaledHeight = viewports ? Math.ceil(viewports.viewport.height * scale) : undefined;
 
   return (
     <div
       ref={containerRef}
-      className={`relative m-0 w-full p-0 ${className}`.trim()}
-      style={{
-        maxWidth: PREP_MAX_WIDTH,
-        width: renderedWidth,
-        height: scaledHeight,
-      }}
+      className={`relative m-0 p-0 ${contain ? "h-full w-full" : "w-full"} ${className}`.trim()}
+      style={
+        contain
+          ? undefined
+          : { maxWidth: PREP_MAX_WIDTH, width: scaledWidth, height: scaledHeight }
+      }
     >
       <div
-        className="absolute left-0 top-0 m-0 p-0"
-        style={{
-          width: PREP_CANVAS.width,
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
-        }}
+        className="relative m-0 overflow-visible p-0"
+        style={{ width: scaledWidth, height: scaledHeight, flexShrink: 0 }}
       >
-        <div ref={panelRef}>
-          <VisitPrepPanel />
+        <div
+          className="absolute left-0 top-0 m-0 p-0"
+          style={{
+            width: PREP_CANVAS.width,
+            height: footprintHeight || undefined,
+            transform: footprintHeight > 0 ? `scale(${scale})` : undefined,
+            transformOrigin: "top left",
+          }}
+        >
+          <div ref={panelRef}>
+            <VisitPrepPanel />
+          </div>
         </div>
       </div>
     </div>

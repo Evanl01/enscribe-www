@@ -1,8 +1,20 @@
 export const SERIF = { fontFamily: "var(--font-source-serif), Georgia, serif" };
 
+/**
+ * MOBILE-WIP — set to false (or delete MobileWipGate) when mobile landing is ready.
+ * Grep: MOBILE_WIP_ENABLED
+ */
+export const MOBILE_WIP_ENABLED = true;
+
 /** Post-hero section pulls up over the video; rounded top sits on the hero. */
 export const HERO_SECTION_OVERLAP_PX = 140;
 export const HERO_SECTION_TOP_RADIUS_PX = 60;
+
+/** Desktop feature accordion — left list and right figure share this height. */
+export const FEATURE_ACCORDION_PANEL_HEIGHT_PX = 640;
+
+/** Inset around the right-column figure (replaces grid gap between columns). */
+export const FEATURE_ACCORDION_FIGURE_GUTTER_PX = 32;
 
 export const FEATURES = [
   {

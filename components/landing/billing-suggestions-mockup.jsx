@@ -5,6 +5,7 @@ import {
   DOCS_CANVAS,
   GenerateDocumentsPanel,
 } from "@/components/landing/generate-documents-mockup";
+import { computeContainedScale, MOCKUP_SHADOW_BLEED_TOP_LEFT } from "@/components/landing/mockup-scale";
 
 /** Tweak billing copy and styling without touching layout code. */
 export const BILLING_SUGGESTIONS_MOCKUP = {
@@ -26,8 +27,8 @@ export const BILLING_SUGGESTIONS_MOCKUP = {
   },
 };
 
-/** Card design canvas width — height is content-driven */
-export const BILLING_CANVAS = { width: 490 };
+/** Card design canvas width — height is content-driven (text wraps as width shrinks). */
+export const BILLING_CANVAS = { width: 380 };
 export const BILLING_MAX_WIDTH = 450;
 
 const SPACE = {
@@ -215,7 +216,7 @@ export function BillingSuggestionsPanel({ config = BILLING_SUGGESTIONS_MOCKUP })
 }
 
 /** Composite layout — billing card sits bottom-right over generate documents */
-const BILLING_LAYOUT = { offsetX: 120, offsetY: 20 };
+const BILLING_LAYOUT = { offsetX: 60, offsetY: 20 };
 
 const FEATURE_CANVAS = {
   width: Math.max(BILLING_CANVAS.width, DOCS_CANVAS.width + 24),
@@ -225,13 +226,28 @@ const FEATURE_CANVAS = {
 const FEATURE_LAYOUT_WIDTH =
   FEATURE_CANVAS.width + Math.max(0, BILLING_LAYOUT.offsetX);
 
+/** Viewport — layout + billing overflow + shadow bleed (used for scale and outer size). */
+function viewportFootprint(layoutHeight) {
+  return {
+    width:
+      FEATURE_LAYOUT_WIDTH +
+      BILLING_LAYOUT.offsetX +
+      MOCKUP_SHADOW_BLEED_TOP_LEFT.right,
+    height:
+      layoutHeight +
+      BILLING_LAYOUT.offsetY +
+      MOCKUP_SHADOW_BLEED_TOP_LEFT.bottom,
+  };
+}
+
 /** Billing + generate-documents overlay for the Coding & letters accordion visual. */
-export function BillingSuggestionsFeatureMockup({ className = "" }) {
+export function BillingSuggestionsFeatureMockup({ className = "", fit }) {
   const containerRef = useRef(null);
   const billingRef = useRef(null);
   const docsRef = useRef(null);
   const [scale, setScale] = useState(1);
   const [footprintHeight, setFootprintHeight] = useState(0);
+  const contain = fit === "contain";
 
   useEffect(() => {
     const container = containerRef.current;
@@ -240,13 +256,18 @@ export function BillingSuggestionsFeatureMockup({ className = "" }) {
     if (!container || !billing || !docs) return;
 
     const updateScale = () => {
-      const { width } = container.getBoundingClientRect();
-      const targetWidth = Math.min(width, BILLING_MAX_WIDTH + 40);
+      const rect = container.getBoundingClientRect();
       const billingHeight = billing.offsetHeight;
       const docsHeight = docs.offsetHeight;
       const billingTop = docsHeight + BILLING_LAYOUT.offsetY - billingHeight;
-      setFootprintHeight(Math.max(docsHeight, billingTop + billingHeight));
-      setScale(targetWidth / FEATURE_LAYOUT_WIDTH);
+      const layoutHeight = Math.max(docsHeight, billingTop + billingHeight);
+      const viewport = viewportFootprint(layoutHeight);
+      const nextScale = contain
+        ? computeContainedScale(rect, viewport, BILLING_MAX_WIDTH + 40)
+        : Math.min(rect.width, BILLING_MAX_WIDTH + 40) / viewport.width;
+
+      setFootprintHeight(layoutHeight);
+      setScale(nextScale);
     };
 
     updateScale();
@@ -255,47 +276,59 @@ export function BillingSuggestionsFeatureMockup({ className = "" }) {
     ro.observe(billing);
     ro.observe(docs);
     return () => ro.disconnect();
-  }, []);
+  }, [contain]);
 
-  const renderedWidth = footprintHeight > 0 ? FEATURE_LAYOUT_WIDTH * scale : undefined;
-  const scaledHeight = footprintHeight > 0 ? footprintHeight * scale : undefined;
+  const viewport =
+    footprintHeight > 0 ? viewportFootprint(footprintHeight) : null;
+  const scaledWidth = viewport ? Math.ceil(viewport.width * scale) : undefined;
+  const scaledHeight = viewport ? Math.ceil(viewport.height * scale) : undefined;
 
   return (
     <div
       ref={containerRef}
-      className={`relative m-0 w-full p-0 ${className}`.trim()}
-      style={{
-        maxWidth: BILLING_MAX_WIDTH + 40,
-        width: renderedWidth,
-        height: scaledHeight,
-      }}
+      className={`relative m-0 p-0 ${contain ? "h-full w-full" : "w-full"} ${className}`.trim()}
+      style={
+        contain
+          ? undefined
+          : { maxWidth: BILLING_MAX_WIDTH + 40, width: scaledWidth, height: scaledHeight }
+      }
     >
       <div
-        className="absolute left-0 top-0 m-0 p-0"
+        className="relative m-0 overflow-visible p-0"
         style={{
-          width: FEATURE_LAYOUT_WIDTH,
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
+          width: scaledWidth,
+          height: scaledHeight,
+          flexShrink: 0,
         }}
       >
         <div
-          className="relative overflow-visible"
-          style={{ width: FEATURE_LAYOUT_WIDTH, height: footprintHeight || undefined }}
+          className="absolute left-0 top-0 m-0 p-0"
+          style={{
+            width: FEATURE_LAYOUT_WIDTH,
+            height: footprintHeight || undefined,
+            transform: footprintHeight > 0 ? `scale(${scale})` : undefined,
+            transformOrigin: "top left",
+          }}
         >
-          <div ref={docsRef} className="absolute left-0 top-0" style={{ zIndex: 1 }}>
-            <GenerateDocumentsPanel />
-          </div>
-
           <div
-            ref={billingRef}
-            className="absolute"
-            style={{
-              right: -BILLING_LAYOUT.offsetX,
-              bottom: -BILLING_LAYOUT.offsetY,
-              zIndex: 2,
-            }}
+            className="relative overflow-visible"
+            style={{ width: FEATURE_LAYOUT_WIDTH, height: footprintHeight || undefined }}
           >
-            <BillingSuggestionsPanel />
+            <div ref={docsRef} className="absolute left-0 top-0" style={{ zIndex: 1 }}>
+              <GenerateDocumentsPanel />
+            </div>
+
+            <div
+              ref={billingRef}
+              className="absolute"
+              style={{
+                right: -BILLING_LAYOUT.offsetX,
+                bottom: -BILLING_LAYOUT.offsetY,
+                zIndex: 2,
+              }}
+            >
+              <BillingSuggestionsPanel />
+            </div>
           </div>
         </div>
       </div>

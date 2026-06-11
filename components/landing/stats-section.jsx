@@ -2,8 +2,8 @@ import { SERIF } from "@/components/landing/constants";
 
 export function StatsSection() {
   const stats = [
-    { value: "32,589,627", label: "patient visits transcribed in 2025" },
-    { value: "5.9 million", label: "hours returned to clinicians each year" },
+    { value: "16,356,627", label: "patient visits transcribed in 2025" },
+    { value: "2.6 million", label: "hours returned to clinicians each year" },
     { value: "26,000+", label: "happy clinicians" },
     { value: "1,300+", label: "clinics and growing" },
   ];

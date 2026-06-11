@@ -3,6 +3,8 @@
 import { useState } from "react";
 import {
   FEATURES,
+  FEATURE_ACCORDION_PANEL_HEIGHT_PX,
+  FEATURE_ACCORDION_FIGURE_GUTTER_PX,
   HERO_SECTION_OVERLAP_PX,
   HERO_SECTION_TOP_RADIUS_PX,
   SERIF,
@@ -33,19 +35,22 @@ export function FeatureAccordionSection() {
           <span className="text-[#3166F7]">hours</span>.
         </h2>
 
-        <div className="mt-14 grid min-w-0 grid-cols-1 gap-10 lg:grid-cols-5 lg:items-stretch lg:gap-16">
+        <div
+          className="mt-14 grid min-w-0 grid-cols-1 gap-10 lg:grid-cols-5 lg:items-stretch lg:gap-0"
+          style={{ "--feature-panel-h": `${FEATURE_ACCORDION_PANEL_HEIGHT_PX}px` }}
+        >
           {/* Accordion column — 2/5 (40%) */}
-          <ul className="min-w-0 divide-y divide-[#183278]/10 border-y border-[#183278]/10 lg:col-span-2 lg:min-h-[32rem]">
+          <ul className="feature-accordion-panel min-w-0 divide-y divide-[#183278]/10 border-y border-[#183278]/10 lg:col-span-2 lg:flex lg:flex-col lg:overflow-hidden">
             {FEATURES.map((f) => {
               const isOpen = f.key === activeKey;
               return (
-                <li key={f.key} className="min-w-0">
+                <li key={f.key} className="flex min-h-0 min-w-0 flex-1 flex-col">
                   <button
                     type="button"
                     aria-expanded={isOpen}
                     aria-controls={`feature-panel-${f.key}`}
                     onClick={() => setActiveKey(f.key)}
-                    className="flex w-full min-w-0 min-h-[4.5rem] cursor-pointer items-center justify-between gap-4 border-0 bg-transparent text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 sm:min-h-[7.5rem]"
+                    className="flex w-full min-w-0 min-h-[4.5rem] shrink-0 cursor-pointer items-center justify-between gap-4 border-0 bg-transparent text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 sm:min-h-[7.5rem] lg:min-h-0 lg:py-5"
                     style={{ paddingTop: 10, paddingBottom: 10 }}
                   >
                     <span
@@ -72,7 +77,7 @@ export function FeatureAccordionSection() {
 
                   {isOpen ? (
                     <div
-                      className="min-w-0 pr-0 lg:pr-8"
+                      className="min-h-0 min-w-0 flex-1 overflow-y-auto"
                       style={{ paddingBottom: 15 }}
                     >
                       <p
@@ -104,18 +109,15 @@ export function FeatureAccordionSection() {
           </ul>
 
           {/* Synced sticky visual — desktop only, 3/5 (60%) */}
-          <div className="hidden min-w-0 lg:col-span-3 lg:block">
-            <div className="sticky top-24">
-              <FeatureVisual
-                feature={active}
-                aspect={
-                  active.media === "mockup"
-                    ? active.mockupAspect === "3 / 4"
-                      ? "aspect-[3/4]"
-                      : "aspect-[25/18]"
-                    : "aspect-[4/3]"
-                }
-              />
+          <div
+            className="feature-accordion-panel hidden min-h-0 min-w-0 overflow-visible lg:col-span-3 lg:block"
+            style={{
+              padding: FEATURE_ACCORDION_FIGURE_GUTTER_PX,
+              boxSizing: "border-box",
+            }}
+          >
+            <div className="sticky top-24 h-full min-h-0 overflow-visible">
+              <FeatureVisual feature={active} layout="accordion" className="h-full w-full" />
             </div>
           </div>
         </div>

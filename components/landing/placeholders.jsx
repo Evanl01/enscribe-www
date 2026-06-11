@@ -54,12 +54,51 @@ export function FeatureMockupNatural({ alt, className = "", children }) {
   );
 }
 
-export function FeatureVisual({ feature, aspect, className = "" }) {
+/**
+ * Fixed-height accordion figure slot — fills the right column; mockups pin top-left.
+ */
+export function FeatureAccordionVisualFrame({ alt, className = "", children }) {
+  return (
+    <figure
+      className={`relative m-0 flex h-full w-full items-start justify-start overflow-visible p-0 ${className}`}
+      aria-label={alt}
+    >
+      {children}
+    </figure>
+  );
+}
+
+function wrapNaturalMockup(alt, className, layout, node) {
+  if (layout === "accordion") {
+    return (
+      <FeatureAccordionVisualFrame alt={alt} className={className}>
+        {node}
+      </FeatureAccordionVisualFrame>
+    );
+  }
+  return (
+    <FeatureMockupNatural alt={alt} className={className}>
+      {node}
+    </FeatureMockupNatural>
+  );
+}
+
+export function FeatureVisual({ feature, aspect, className = "", layout = "inline" }) {
+  const alt = feature.imageAlt ?? feature.title;
+
   if (feature.media === "mockup" && feature.mockupKey === "ambientScribe") {
+    if (layout === "accordion") {
+      return wrapNaturalMockup(
+        alt,
+        className,
+        layout,
+        <AiScribeFeatureMockup key={feature.key} fit="contain" />,
+      );
+    }
     return (
       <FeatureMockup
         key={feature.key}
-        alt={feature.imageAlt ?? feature.title}
+        alt={alt}
         ratio={feature.mockupAspect ?? "25 / 18"}
         className={className}
       >
@@ -69,38 +108,38 @@ export function FeatureVisual({ feature, aspect, className = "" }) {
   }
 
   if (feature.media === "mockup" && feature.mockupKey === "billingSuggestions") {
-    return (
-      <FeatureMockupNatural
+    return wrapNaturalMockup(
+      alt,
+      className,
+      layout,
+      <BillingSuggestionsFeatureMockup
         key={feature.key}
-        alt={feature.imageAlt ?? feature.title}
-        className={className}
-      >
-        <BillingSuggestionsFeatureMockup />
-      </FeatureMockupNatural>
+        fit={layout === "accordion" ? "contain" : undefined}
+      />,
     );
   }
 
   if (feature.media === "mockup" && feature.mockupKey === "visitPrep") {
-    return (
-      <FeatureMockupNatural
+    return wrapNaturalMockup(
+      alt,
+      className,
+      layout,
+      <VisitPrepFeatureMockup
         key={feature.key}
-        alt={feature.imageAlt ?? feature.title}
-        className={className}
-      >
-        <VisitPrepFeatureMockup />
-      </FeatureMockupNatural>
+        fit={layout === "accordion" ? "contain" : undefined}
+      />,
     );
   }
 
   if (feature.media === "mockup" && feature.mockupKey === "noteEhrPush") {
-    return (
-      <FeatureMockupNatural
+    return wrapNaturalMockup(
+      alt,
+      className,
+      layout,
+      <NoteEhrPushFeatureMockup
         key={feature.key}
-        alt={feature.imageAlt ?? feature.title}
-        className={className}
-      >
-        <NoteEhrPushFeatureMockup />
-      </FeatureMockupNatural>
+        fit={layout === "accordion" ? "contain" : undefined}
+      />,
     );
   }
 

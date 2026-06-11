@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @source "../components/**/*.{js,jsx}";
 @source inline("ehr-push-button-emphasis");
-
+@source inline("feature-accordion-panel");
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
@@ -88,5 +88,14 @@
 @media (prefers-reduced-motion: reduce) {
   .ehr-push-button-emphasis::after {
     animation: none;
+  }
+}
+
+/** Desktop accordion — hard cap so left list and right figure stay the same height. */
+@media (min-width: 1024px) {
+  .feature-accordion-panel {
+    height: var(--feature-panel-h);
+    max-height: var(--feature-panel-h);
+    min-height: var(--feature-panel-h);
   }
 }

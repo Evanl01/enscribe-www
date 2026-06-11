@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { computeContainedScale, mockupViewports } from "@/components/landing/mockup-scale";
 import {
   NOTE_CANVAS,
   NOTE_LAYOUT,
@@ -124,6 +125,7 @@ function AmbientScribePanel({ config, meterSamples = STATIC_WAVEFORM }) {
         backgroundColor: panelBlue,
         color: "#ffffff",
         borderRadius: 16,
+        boxShadow: "0 18px 40px rgba(11,26,71,0.18), 0 2px 8px rgba(11,26,71,0.06)",
       }}
     >
       <div
@@ -190,91 +192,118 @@ function AmbientScribePanel({ config, meterSamples = STATIC_WAVEFORM }) {
 /** Overlap between ambient panel and SOAP note in the composite layout */
 const FEATURE_NOTE_OVERLAP_PX = 90;
 
-/** Composite canvas — layout width is fixed so shrinking the panel leaves top-right space. */
-const FEATURE_CANVAS = {
+/** Panel positions within the layout box (inset from render bleed padding). */
+const AMBIENT_LAYOUT = { top: 0, left: 0 };
+
+/** Layout box — panel positions only; shadows render into the bleed margin. */
+const FEATURE_LAYOUT = {
   width: FEATURE_LAYOUT_WIDTH,
   height:
     CANVAS.height + NOTE_CANVAS.height - NOTE_LAYOUT.offsetY - FEATURE_NOTE_OVERLAP_PX,
 };
 
-/** Pin composite mockup to figure top-left (0px inset). */
-const AMBIENT_LAYOUT = { top: 0, left: 0 };
+/** Visible footprint — note extends below the layout box. */
+const FEATURE_FOOTPRINT_HEIGHT = FEATURE_LAYOUT.height + NOTE_LAYOUT.offsetY;
+
+const FEATURE_LAYOUT_FOOTPRINT = {
+  width: FEATURE_LAYOUT.width,
+  height: FEATURE_FOOTPRINT_HEIGHT,
+};
+
+const { viewport: FEATURE_VIEWPORT } = mockupViewports(FEATURE_LAYOUT_FOOTPRINT);
 
 /** Ambient scribe + SOAP note overlay for the AI scribe accordion visual. */
-export function AiScribeFeatureMockup({ className = "" }) {
+export function AiScribeFeatureMockup({ className = "", fit }) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(1);
+  const contain = fit === "contain";
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
     const updateScale = () => {
-      const { width } = el.getBoundingClientRect();
-      // Scale to figure width so the left edge stays flush (no height cap).
-      setScale(width / FEATURE_CANVAS.width);
+      const rect = el.getBoundingClientRect();
+      setScale(
+        contain
+          ? computeContainedScale(rect, FEATURE_VIEWPORT)
+          : rect.width / FEATURE_VIEWPORT.width,
+      );
     };
 
     updateScale();
     const ro = new ResizeObserver(updateScale);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [contain]);
 
-  const scaledWidth = FEATURE_CANVAS.width * scale;
-  // Note sits at bottom: -offsetY, so the visible footprint extends below FEATURE_CANVAS.
-  const scaledHeight = (FEATURE_CANVAS.height + NOTE_LAYOUT.offsetY) * scale;
+  const scaledWidth = FEATURE_VIEWPORT.width * scale;
+  const scaledHeight = FEATURE_VIEWPORT.height * scale;
+
+  const viewport = (
+    <div
+      className="relative m-0 overflow-visible p-0"
+      style={{
+        width: Math.ceil(scaledWidth),
+        height: Math.ceil(scaledHeight),
+        flexShrink: 0,
+      }}
+    >
+      <div
+        className="absolute left-0 top-0 m-0 p-0"
+        style={{
+          width: FEATURE_LAYOUT_FOOTPRINT.width,
+          height: FEATURE_LAYOUT_FOOTPRINT.height,
+          transform: `scale(${scale})`,
+          transformOrigin: "top left",
+        }}
+      >
+        <div
+          className="relative overflow-visible"
+          style={{ width: FEATURE_LAYOUT.width, height: FEATURE_LAYOUT.height }}
+        >
+          <div
+            className="absolute"
+            style={{
+              left: AMBIENT_LAYOUT.left,
+              top: AMBIENT_LAYOUT.top,
+              zIndex: 1,
+            }}
+          >
+            <AmbientScribePanel config={AMBIENT_SCRIBE_MOCKUP} />
+          </div>
+
+          <div
+            className="absolute"
+            style={{ right: 0, bottom: -NOTE_LAYOUT.offsetY, zIndex: 2 }}
+          >
+            <ScribeNoteMockup />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div
       ref={containerRef}
       className={`relative m-0 h-full w-full p-0 ${className}`.trim()}
     >
-      {/* Viewport sized to the scaled footprint — pins flush top-left */}
-      <div
-        className="absolute m-0 p-0"
-        style={{
-          top: AMBIENT_LAYOUT.top,
-          left: AMBIENT_LAYOUT.left,
-          width: scaledWidth,
-          height: scaledHeight,
-        }}
-      >
+      {contain ? (
+        viewport
+      ) : (
         <div
-          className="absolute m-0 p-0 drop-shadow-[0_24px_48px_rgba(0,0,0,0.28)]"
+          className="absolute m-0 p-0"
           style={{
-            top: 0,
-            left: 0,
-            width: FEATURE_CANVAS.width,
-            height: FEATURE_CANVAS.height,
-            transform: `scale(${scale})`,
-            transformOrigin: "top left",
+            top: AMBIENT_LAYOUT.top,
+            left: AMBIENT_LAYOUT.left,
+            width: scaledWidth,
+            height: scaledHeight,
           }}
         >
-          <div
-            className="relative overflow-visible"
-            style={{ width: FEATURE_CANVAS.width, height: FEATURE_CANVAS.height }}
-          >
-            <div
-              className="absolute"
-              style={{
-                left: AMBIENT_LAYOUT.left,
-                top: AMBIENT_LAYOUT.top,
-                zIndex: 1,
-              }}
-            >
-              <AmbientScribePanel config={AMBIENT_SCRIBE_MOCKUP} />
-            </div>
-
-            <div
-              className="absolute"
-              style={{ right: 0, bottom: -NOTE_LAYOUT.offsetY, zIndex: 2 }}
-            >
-              <ScribeNoteMockup />
-            </div>
-          </div>
+          {viewport}
         </div>
-      </div>
+      )}
     </div>
   );
 }
