@@ -1,8 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AppLink } from "@/components/landing/app-link";
-import { HERO_SECTION_OVERLAP_PX, SERIF } from "@/components/landing/constants";
+import {
+  HERO_SECTION_OVERLAP_PX,
+  LANDING_FEATURES_ANCHOR_ID,
+  LANDING_STICKY_HEADER_PX,
+  LANDING_TRY_FOR_FREE_HREF,
+  SERIF,
+} from "@/components/landing/constants";
 
 const POSTER = "/videos/hero-poster-4k.webp";
 const DESKTOP_MP4 = "/videos/hero-desktop-4k.mp4";
@@ -32,16 +39,34 @@ function useIsMdUp() {
   return useSyncExternalStore(subscribeMd, getMdSnapshot, () => false);
 }
 
+function scrollToFeaturesAnchor(event) {
+  event.preventDefault();
+
+  const target = document.getElementById(LANDING_FEATURES_ANCHOR_ID);
+  if (!target) return;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const top =
+    target.getBoundingClientRect().top + window.scrollY - LANDING_STICKY_HEADER_PX;
+
+  window.scrollTo({
+    top: Math.max(0, top),
+    behavior: reduceMotion ? "auto" : "smooth",
+  });
+
+  history.replaceState(null, "", `#${LANDING_FEATURES_ANCHOR_ID}`);
+}
+
 function HeroCtaButtons() {
   return (
     <>
-      <AppLink
-        href="/signup"
+      <Link
+        href={LANDING_TRY_FOR_FREE_HREF}
         className={`${CTA_CLASS} bg-[#3166F7] text-white shadow-[0_12px_32px_rgba(49,102,247,0.45)] transition hover:bg-[#2751C4] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B1A47]`}
         style={{ width: "12.5rem" }}
       >
         Try for free
-      </AppLink>
+      </Link>
       <AppLink
         href="/login"
         className={`${CTA_CLASS} border border-white/30 bg-white/10 text-white backdrop-blur transition hover:border-white/55 hover:bg-white/15`}
@@ -219,15 +244,19 @@ export function VideoHeroSection() {
 
       {/* Scroll hint */}
       <div
-        className="pointer-events-none absolute inset-x-0 flex justify-center"
+        className="absolute inset-x-0 flex justify-center"
         style={{ zIndex: 10, bottom: HERO_OVERLAP + 16 }}
       >
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/80 backdrop-blur">
+        <a
+          href={`#${LANDING_FEATURES_ANCHOR_ID}`}
+          onClick={scrollToFeaturesAnchor}
+          className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/80 backdrop-blur transition hover:border-white/40 hover:bg-white/15 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B1A47]"
+        >
           Scroll to explore
-          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2}>
+          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
-        </span>
+        </a>
       </div>
     </section>
   );

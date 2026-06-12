@@ -9,8 +9,11 @@ export const metadata = {
 
 export default function LandingPageRoute() {
   return (
-    <BetaOnly fallback={<BetaOnlyFallback />}>
-      <LandingPage />
-    </BetaOnly>
+    <>
+      <link rel="preload" as="image" href="/videos/hero-poster-4k.webp" type="image/webp" />
+      <BetaOnly fallback={<BetaOnlyFallback />}>
+        <LandingPage />
+      </BetaOnly>
+    </>
   );
 }

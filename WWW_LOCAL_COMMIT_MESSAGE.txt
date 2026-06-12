@@ -1,12 +1,11 @@
-Add scroll-stacked clinician quotes and simplify pricing on landing page 2
+Promote landing page 2 to production home and refine hero scroll UX
 
-Deliver a sticky scroll-driven quote deck with real testimonial copy, unify
-the quotes/testimonials backdrop, and refresh pricing to a simpler three-tier model.
+Wire the hero "Scroll to explore" control to smooth-scroll
+into the features section, centralize Try for free links, and refresh accordion
+mockups with aligned Anya Harmon renal case copy plus visit-prep typing animation.
 
-- Rebuild clinician quote bands as a scroll-pinned card stack (ResizeObserver
-  height sync, reduced-motion fallback, portrait + quote grid layout)
-- Add QUOTES_TESTIMONIALS_BG_STYLE and landing-quotes-testimonials-bg for
-  fixed-viewport radial gradients on quote and testimonials sections
-- Wrap VideoHeroSection in h-screen so sticky hero does not bleed into later sections
-- Simplify pricing to Free / Pro / Enterprise tiers; drop monthly/annual toggle
-  and switch grid to three columns with updated subhead copy
+- Add global smooth scroll, features anchor, and header-aware scroll offset for hero handoff
+- Point Try for free CTAs at `LANDING_TRY_FOR_FREE_HREF` (header, hero, final CTA)
+- Align visit-prep, scribe-note, EHR push, and document mockups to shared renal follow-up narrative
+- Animate visit-prep assistant reply with typing cursor and reduced-motion fallback
+- Add `noteTitle` to scribe note header; give pricing section `#pricing` anchor + scroll margin

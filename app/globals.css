@@ -7,6 +7,10 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @keyframes marquee-l {
   from {
     transform: translateX(0);

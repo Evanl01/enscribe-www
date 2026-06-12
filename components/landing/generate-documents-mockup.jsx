@@ -13,9 +13,9 @@ export const GENERATE_DOCUMENTS_MOCKUP = {
       showCopy: true,
       body: [
         "Dear Anya,",
-        "It was good to see you today for your kidney follow-up. We reviewed your recent labs — your eGFR is stable at 42 mL/min and potassium is within range.",
+        "It was good to see you today for your kidney follow-up. We reviewed your recent labs — your eGFR is 38 mL/min with worsening proteinuria.",
         "Please continue lisinopril 10 mg daily. Avoid NSAIDs (ibuprofen, naproxen). Follow a low-sodium diet (<2,000 mg/day) and limit fluids to 1.5 L per day as discussed.",
-        "Repeat BMP and urine albumin in 4 weeks. Call the office if you notice leg swelling, decreased urine output, or blood pressure readings above 150/90.",
+        "Repeat BMP and urine albumin in 3 months. A renal dietitian referral has been sent. Call the office if you notice worsening leg swelling, foamy urine, decreased urine output, or blood pressure readings above 150/90.",
         "Sincerely,\nDr. Patel",
       ],
     },

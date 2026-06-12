@@ -15,7 +15,7 @@ export const NOTE_EHR_PUSH_MOCKUP = {
   ehr: "Epic",
   expandedSection: {
     label: "Subjective",
-    text: "Patient reports improved energy and fewer nocturnal urination episodes. Denies chest pain, SOB, or vision changes. Taking metformin 1000 mg BID with meals.",
+    text: "Reports recurrent bilateral ankle swelling by evening, home BP readings ~148/92, and foamy urine over the past week.",
   },
   collapsedSections: ["Objective", "Assessment", "Plan", "ICD-10 & CPT", "Patient Instructions"],
   animatePushButton: true,

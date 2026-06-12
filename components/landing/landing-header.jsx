@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AppLink } from "@/components/landing/app-link";
+import { LANDING_TRY_FOR_FREE_HREF } from "@/components/landing/constants";
 
 const LOGO_SRC = "/enscribe-icon.svg";
 
@@ -37,12 +38,12 @@ export function LandingHeader() {
           >
             Log in
           </AppLink>
-          <AppLink
-            href="/signup"
+          <Link
+            href={LANDING_TRY_FOR_FREE_HREF}
             className="rounded-lg bg-[#3166F7] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2751C4] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2"
           >
             Try for free
-          </AppLink>
+          </Link>
         </nav>
       </div>
     </header>

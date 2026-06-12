@@ -4,7 +4,8 @@ import { AppLink } from "@/components/landing/app-link";
 export function PricingSection() {
   return (
     <section
-      className="border-t border-[#183278]/8 bg-[#F9FAFF] py-24"
+      id="pricing"
+      className="border-t border-[#183278]/8 bg-[#F9FAFF] py-24 scroll-mt-16"
       aria-labelledby="pricing-heading"
     >
       <div className="mx-auto max-w-6xl px-5 sm:px-8">

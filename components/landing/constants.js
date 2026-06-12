@@ -1,5 +1,8 @@
 export const SERIF = { fontFamily: "var(--font-source-serif), Georgia, serif" };
 
+/** Primary "Try for free" CTAs on the marketing landing page. */
+export const LANDING_TRY_FOR_FREE_HREF = "/";
+
 /** Abstract shapes — fixed to viewport so they stay visible during sticky scroll. */
 export const QUOTES_TESTIMONIALS_BG_STYLE = {
   backgroundColor: "#F9FAFF",
@@ -22,6 +25,12 @@ export const MOBILE_WIP_ENABLED = true;
 
 /** Post-hero section pulls up over the video; rounded top sits on the hero. */
 export const HERO_SECTION_OVERLAP_PX = 140;
+
+/** Hero "Scroll to explore" — in-page anchor + smooth-scroll offset. */
+export const LANDING_FEATURES_ANCHOR_ID = "features";
+export const LANDING_STICKY_HEADER_PX = 64;
+/** Lifts the features anchor above the post-hero wrapper for a softer handoff. */
+export const LANDING_FEATURES_SCROLL_LIFT_PX = 1;
 export const HERO_SECTION_TOP_RADIUS_PX = 60;
 
 /** Desktop feature accordion — left list and right figure share this height. */

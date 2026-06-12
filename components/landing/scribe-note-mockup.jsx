@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 /** Tweak note copy and styling without touching layout code. */
 export const SCRIBE_NOTE_MOCKUP = {
   header: "SOAP note",
+  noteTitle: "Anya Harmon",
   sections: [
     {
       key: "S",
@@ -32,7 +33,7 @@ export const SCRIBE_NOTE_MOCKUP = {
 };
 
 /** SOAP note card design canvas (width × height) */
-export const NOTE_CANVAS = { width: 340, height: 300 };
+export const NOTE_CANVAS = { width: 340, height: 320 };
 
 /** Composite layout tweak — positive shifts the note downward. */
 export const NOTE_LAYOUT = { offsetY: 425 };
@@ -66,7 +67,7 @@ function SoapSection({ sectionKey, label, text, showCursor = false }) {
 }
 
 export function ScribeNotePanel({ config = SCRIBE_NOTE_MOCKUP, typedChars = null }) {
-  const { header, sections, typingSection } = config;
+  const { header, noteTitle, sections, typingSection } = config;
   const showTyping = typedChars !== null && typingSection;
   const typedText = showTyping ? typingSection.text.slice(0, typedChars) : typingSection?.text ?? "";
 
@@ -89,12 +90,31 @@ export function ScribeNotePanel({ config = SCRIBE_NOTE_MOCKUP, typedChars = null
           padding: "10px 12px 9px",
         }}
       >
-        <p
-          className="font-bold uppercase tracking-wider"
-          style={{ fontSize: 10.5, color: "#3166F7", margin: 0, letterSpacing: "0.06em" }}
-        >
-          {header}
-        </p>
+        <div className="flex items-baseline gap-2">
+          <p
+            className="shrink-0 font-bold uppercase tracking-wider"
+            style={{ fontSize: 10.5, color: "#3166F7", margin: 0, letterSpacing: "0.06em" }}
+          >
+            {header}
+          </p>
+          {noteTitle ? (
+            <>
+              <span
+                aria-hidden
+                className="shrink-0"
+                style={{ fontSize: 10.5, color: "rgba(60,76,120,0.45)", lineHeight: 1 }}
+              >
+                ·
+              </span>
+              <p
+                className="min-w-0 truncate font-semibold"
+                style={{ fontSize: 14, color: "#183278", margin: 0 }}
+              >
+                {noteTitle}
+              </p>
+            </>
+          ) : null}
+        </div>
       </div>
 
       <div

@@ -9,17 +9,19 @@ import { computeContainedScale, mockupViewports } from "@/components/landing/moc
 export const VISIT_PREP_MOCKUP = {
   title: "Anya Harmon F/U May 12",
   userMessage: "Any recent med changes?",
-  assistantIntro: "Yes:",
+  assistantIntro: "No.",
   assistantBullets: [
-    "Metformin dose increased due to elevated glucose",
-    "Basal insulin discussed but not yet started",
+    "Lisinopril 10 mg daily — unchanged",
+    "No new prescriptions or OTC meds",
   ],
   suggestions: [
-    "Review glucose trends",
-    "Revisit insulin readiness",
-    "Check medication tolerance",
+    "Review last BMP",
+    "Check home BP trend",
+    "Ask about leg swelling",
   ],
   inputPlaceholder: "Ask anything",
+  animateTyping: true,
+  typingIntervalMs: 42,
 };
 
 /** Card design canvas width — height is content-driven */
@@ -52,6 +54,29 @@ const TYPE = {
   chip: 11.5,
   input: 12.5,
 };
+
+const ASSISTANT_CHAT = {
+  lineHeight: 1.45,
+  lineGap: 3,
+  textInset: 7,
+  avatarSize: 28,
+  /** Vertically centers avatar with the first text line only. */
+  avatarOffsetTop: (TYPE.chat * 1.45) / 2 - 28 / 2,
+};
+
+function getAssistantResponseText(intro, bullets) {
+  return [intro, ...bullets].join("\n");
+}
+
+function sliceAssistantResponse(intro, bullets, typedChars) {
+  const fullText = getAssistantResponseText(intro, bullets);
+  const typed = fullText.slice(0, typedChars);
+  return {
+    lines: typed.split("\n"),
+    showCursor: typedChars < fullText.length,
+    fullLength: fullText.length,
+  };
+}
 
 function HistoryIcon({ size = 15 }) {
   return (
@@ -153,8 +178,8 @@ function AssistantAvatar() {
     <div
       className="shrink-0 overflow-hidden rounded-full"
       style={{
-        width: 28,
-        height: 28,
+        width: ASSISTANT_CHAT.avatarSize,
+        height: ASSISTANT_CHAT.avatarSize,
         border: `1px solid ${COLORS.border}`,
         backgroundColor: "#ffffff",
       }}
@@ -162,8 +187,8 @@ function AssistantAvatar() {
       <Image
         src="/enscribe-icon-32x32.png"
         alt=""
-        width={28}
-        height={28}
+        width={ASSISTANT_CHAT.avatarSize}
+        height={ASSISTANT_CHAT.avatarSize}
         className="h-full w-full object-cover"
         aria-hidden
       />
@@ -171,9 +196,44 @@ function AssistantAvatar() {
   );
 }
 
-export function VisitPrepPanel({ config = VISIT_PREP_MOCKUP }) {
+function AssistantResponseText({ lines, showCursor = false, reserveLayout = false }) {
+  return (
+    <div
+      className="flex min-w-0 flex-1 flex-col"
+      style={{
+        gap: ASSISTANT_CHAT.lineGap,
+        paddingLeft: ASSISTANT_CHAT.textInset,
+        fontSize: TYPE.chat,
+        color: COLORS.body,
+        lineHeight: ASSISTANT_CHAT.lineHeight,
+        visibility: reserveLayout ? "hidden" : undefined,
+      }}
+      aria-hidden={reserveLayout || undefined}
+    >
+      {lines.map((line, index) => (
+        <p key={index} className="leading-snug" style={{ margin: 0 }}>
+          {line}
+          {!reserveLayout && showCursor && index === lines.length - 1 ? (
+            <span className="scribe-note-cursor ml-px inline-block align-middle" aria-hidden />
+          ) : null}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+export function VisitPrepPanel({ config = VISIT_PREP_MOCKUP, typedChars = null }) {
   const { title, userMessage, assistantIntro, assistantBullets, suggestions, inputPlaceholder } =
     config;
+
+  const showTyping = typedChars !== null;
+  const fullResponseLines = [assistantIntro, ...assistantBullets];
+  const response = showTyping
+    ? sliceAssistantResponse(assistantIntro, assistantBullets, typedChars)
+    : {
+        lines: fullResponseLines,
+        showCursor: false,
+      };
 
   return (
     <div
@@ -223,35 +283,27 @@ export function VisitPrepPanel({ config = VISIT_PREP_MOCKUP }) {
             {userMessage}
           </p>
 
-          <div className="flex" style={{ gap: 9 }}>
-            <AssistantAvatar />
-            <div className="min-w-0 flex-1">
-              <p
-                className="leading-snug"
-                style={{ margin: 0, fontSize: TYPE.chat, color: COLORS.body }}
-              >
-                {assistantIntro}
-              </p>
-              <ul
-                className="flex flex-col"
-                style={{
-                  margin: "4px 0 0",
-                  padding: "0 0 0 16px",
-                  gap: 3,
-                  fontSize: TYPE.chat,
-                  color: COLORS.body,
-                  lineHeight: 1.45,
-                }}
-              >
-                {assistantBullets.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
+          <div className="flex items-start" style={{ gap: 9 }}>
+            <div className="shrink-0" style={{ marginTop: ASSISTANT_CHAT.avatarOffsetTop }}>
+              <AssistantAvatar />
             </div>
+            {showTyping ? (
+              <div className="relative min-w-0 flex-1">
+                <AssistantResponseText lines={fullResponseLines} reserveLayout />
+                <div className="absolute inset-0">
+                  <AssistantResponseText
+                    lines={response.lines}
+                    showCursor={response.showCursor}
+                  />
+                </div>
+              </div>
+            ) : (
+              <AssistantResponseText lines={response.lines} />
+            )}
           </div>
         </div>
 
-        <div className="flex flex-wrap" style={{ gap: SPACE.chipGap, marginTop: 14 }}>
+        <div className="flex flex-wrap" style={{ gap: SPACE.chipGap, marginTop: 60 }}>
           {suggestions.map((label) => (
             <span
               key={label}
@@ -300,12 +352,36 @@ export function VisitPrepPanel({ config = VISIT_PREP_MOCKUP }) {
 }
 
 /** Visit prep chat card — scales to fit its container for the accordion visual. */
-export function VisitPrepFeatureMockup({ className = "", fit }) {
+export function VisitPrepFeatureMockup({ className = "", fit, config = VISIT_PREP_MOCKUP }) {
   const containerRef = useRef(null);
   const panelRef = useRef(null);
   const [scale, setScale] = useState(1);
   const [footprintHeight, setFootprintHeight] = useState(0);
+  const fullResponseLength = getAssistantResponseText(
+    config.assistantIntro,
+    config.assistantBullets,
+  ).length;
+  const [typedChars, setTypedChars] = useState(() =>
+    config.animateTyping ? 0 : fullResponseLength,
+  );
   const contain = fit === "contain";
+
+  useEffect(() => {
+    if (!config.animateTyping) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) {
+      setTypedChars(fullResponseLength);
+      return;
+    }
+
+    let count = 0;
+    const id = window.setInterval(() => {
+      count += 1;
+      setTypedChars(count);
+      if (count >= fullResponseLength) window.clearInterval(id);
+    }, config.typingIntervalMs);
+    return () => window.clearInterval(id);
+  }, [config, fullResponseLength]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -365,7 +441,10 @@ export function VisitPrepFeatureMockup({ className = "", fit }) {
           }}
         >
           <div ref={panelRef}>
-            <VisitPrepPanel />
+            <VisitPrepPanel
+              config={config}
+              typedChars={config.animateTyping ? typedChars : null}
+            />
           </div>
         </div>
       </div>
