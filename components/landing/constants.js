@@ -1,7 +1,7 @@
 export const SERIF = { fontFamily: "var(--font-source-serif), Georgia, serif" };
 
 /** Primary "Try for free" CTAs on the marketing landing page. */
-export const LANDING_TRY_FOR_FREE_HREF = "/";
+export const LANDING_TRY_FOR_FREE_HREF = "/signup";
 
 /** Abstract shapes — fixed to viewport so they stay visible during sticky scroll. */
 export const QUOTES_TESTIMONIALS_BG_STYLE = {

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AppLink } from "@/components/landing/app-link";
 import {
@@ -60,13 +59,13 @@ function scrollToFeaturesAnchor(event) {
 function HeroCtaButtons() {
   return (
     <>
-      <Link
+      <AppLink
         href={LANDING_TRY_FOR_FREE_HREF}
         className={`${CTA_CLASS} bg-[#3166F7] text-white shadow-[0_12px_32px_rgba(49,102,247,0.45)] transition hover:bg-[#2751C4] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B1A47]`}
         style={{ width: "12.5rem" }}
       >
         Try for free
-      </Link>
+      </AppLink>
       <AppLink
         href="/login"
         className={`${CTA_CLASS} border border-white/30 bg-white/10 text-white backdrop-blur transition hover:border-white/55 hover:bg-white/15`}

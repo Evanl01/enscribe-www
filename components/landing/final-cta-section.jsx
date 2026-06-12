@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { AppLink } from "@/components/landing/app-link";
 import { LANDING_TRY_FOR_FREE_HREF, SERIF } from "@/components/landing/constants";
 
@@ -14,12 +13,12 @@ export function FinalCtaSection() {
           <span className="text-[#3166F7]">better things</span>
         </h2>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link
+          <AppLink
             href={LANDING_TRY_FOR_FREE_HREF}
             className="inline-flex justify-center rounded-xl bg-[#183278] px-7 py-4 text-base font-semibold text-white transition hover:bg-[#14285F]"
           >
             Try for free
-          </Link>
+          </AppLink>
           <AppLink
             href="/login"
             className="inline-flex justify-center rounded-xl border border-[#183278]/20 bg-white px-7 py-4 text-base font-semibold text-[#183278] transition hover:border-[#183278]/35"
