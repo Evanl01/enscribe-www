@@ -11,6 +11,8 @@ import { StatsSection } from "@/components/landing/stats-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { FinalCtaSection } from "@/components/landing/final-cta-section";
 import { MobileWipGate } from "@/components/landing/mobile-wip-gate";
+import { BetaOnly } from "@/components/beta-only";
+import { LandingBetaWip } from "@/components/landing/landing-beta-wip";
 import {
   LANDING_FEATURES_ANCHOR_ID,
   LANDING_FEATURES_SCROLL_LIFT_PX,
@@ -40,12 +42,16 @@ export function LandingPage() {
             }}
           />
           <FeatureAccordionSection />
-          <SmallPracticesSection />
-          <ClinicianQuoteBands />
-          <TestimonialsSection />
-          <StatsSection />
-          <PricingSection />
-          <FinalCtaSection />
+          <BetaOnly fallback={<LandingBetaWip />}>
+            <>
+              <SmallPracticesSection />
+              <ClinicianQuoteBands />
+              <TestimonialsSection />
+              <StatsSection />
+              <PricingSection />
+              <FinalCtaSection />
+            </>
+          </BetaOnly>
         </div>
       </main>
       <LandingFooter />

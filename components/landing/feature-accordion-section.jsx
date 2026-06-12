@@ -39,87 +39,87 @@ export function FeatureAccordionSection() {
           className="mt-14 grid min-w-0 grid-cols-1 gap-10 lg:grid-cols-5 lg:items-stretch lg:gap-0"
           style={{ "--feature-panel-h": `${FEATURE_ACCORDION_PANEL_HEIGHT_PX}px` }}
         >
-          {/* Accordion column — 2/5 (40%) */}
-          <ul className="feature-accordion-panel min-w-0 divide-y divide-[#183278]/10 border-y border-[#183278]/10 lg:col-span-2 lg:flex lg:flex-col lg:overflow-hidden">
-            {FEATURES.map((f) => {
-              const isOpen = f.key === activeKey;
-              return (
-                <li key={f.key} className="flex min-h-0 min-w-0 flex-1 flex-col">
-                  <button
-                    type="button"
-                    aria-expanded={isOpen}
-                    aria-controls={`feature-panel-${f.key}`}
-                    onClick={() => setActiveKey(f.key)}
-                    className="flex w-full min-w-0 min-h-[4.5rem] shrink-0 cursor-pointer items-center justify-between gap-4 border-0 bg-transparent text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 sm:min-h-[7.5rem] lg:min-h-0 lg:py-5"
-                    style={{ paddingTop: 10, paddingBottom: 10 }}
+      {/* Accordion column — 2/5 (40%) */}
+      <ul className="feature-accordion-panel min-w-0 divide-y divide-[#183278]/10 border-y border-[#183278]/10 lg:col-span-2 lg:flex lg:flex-col lg:overflow-hidden">
+        {FEATURES.map((f) => {
+          const isOpen = f.key === activeKey;
+          return (
+            <li key={f.key} className="flex min-h-0 min-w-0 flex-1 flex-col">
+              <button
+                type="button"
+                aria-expanded={isOpen}
+                aria-controls={`feature-panel-${f.key}`}
+                onClick={() => setActiveKey(f.key)}
+                className="flex w-full min-w-0 min-h-[4.5rem] shrink-0 cursor-pointer items-center justify-between gap-4 border-0 bg-transparent text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 sm:min-h-[7.5rem] lg:min-h-0 lg:py-5"
+                style={{ paddingTop: 10, paddingBottom: 10 }}
+              >
+                <span
+                  className={`min-w-0 flex-1 pr-2 text-xl font-semibold transition sm:text-2xl ${
+                    isOpen ? "text-[#183278]" : "text-[#3C4C78]"
+                  }`}
+                  style={SERIF}
+                >
+                  {f.title}
+                </span>
+                <span
+                  aria-hidden
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition ${
+                    isOpen
+                      ? "rotate-45 border-[#3166F7] bg-[#3166F7] text-white"
+                      : "border-[#183278]/20 bg-white text-[#183278]"
+                  }`}
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" d="M12 5v14M5 12h14" />
+                  </svg>
+                </span>
+              </button>
+
+              {isOpen ? (
+                <div
+                  className="min-h-0 min-w-0 flex-1 overflow-y-auto"
+                  style={{ paddingBottom: 15 }}
+                >
+                  <p
+                    className="text-base leading-relaxed text-[#3C4C78]"
+                    style={{ margin: 0 }}
                   >
-                    <span
-                      className={`min-w-0 flex-1 pr-2 text-xl font-semibold transition sm:text-2xl ${
-                        isOpen ? "text-[#183278]" : "text-[#3C4C78]"
-                      }`}
-                      style={SERIF}
-                    >
-                      {f.title}
-                    </span>
-                    <span
-                      aria-hidden
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition ${
-                        isOpen
-                          ? "rotate-45 border-[#3166F7] bg-[#3166F7] text-white"
-                          : "border-[#183278]/20 bg-white text-[#183278]"
-                      }`}
-                    >
-                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" d="M12 5v14M5 12h14" />
-                      </svg>
-                    </span>
-                  </button>
+                    {f.blurb}
+                  </p>
+                  {/* Inline below copy on < lg */}
+                  <div className="mt-4 w-full max-w-full overflow-hidden lg:hidden">
+                    <FeatureVisual
+                      feature={active}
+                      aspect={
+                        active.media === "mockup"
+                          ? active.mockupAspect === "3 / 4"
+                            ? "aspect-[3/4]"
+                            : "aspect-[25/18]"
+                          : active.imageSrc
+                            ? "aspect-[3/4]"
+                            : "aspect-video"
+                      }
+                    />
+                  </div>
+                </div>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
 
-                  {isOpen ? (
-                    <div
-                      className="min-h-0 min-w-0 flex-1 overflow-y-auto"
-                      style={{ paddingBottom: 15 }}
-                    >
-                      <p
-                        className="text-base leading-relaxed text-[#3C4C78]"
-                        style={{ margin: 0 }}
-                      >
-                        {f.blurb}
-                      </p>
-                      {/* Inline below copy on < lg */}
-                      <div className="mt-4 w-full max-w-full overflow-hidden lg:hidden">
-                        <FeatureVisual
-                          feature={active}
-                          aspect={
-                            active.media === "mockup"
-                              ? active.mockupAspect === "3 / 4"
-                                ? "aspect-[3/4]"
-                                : "aspect-[25/18]"
-                              : active.imageSrc
-                                ? "aspect-[3/4]"
-                                : "aspect-video"
-                          }
-                        />
-                      </div>
-                    </div>
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
-
-          {/* Synced sticky visual — desktop only, 3/5 (60%) */}
-          <div
-            className="feature-accordion-panel hidden min-h-0 min-w-0 overflow-visible lg:col-span-3 lg:block"
-            style={{
-              padding: FEATURE_ACCORDION_FIGURE_GUTTER_PX,
-              boxSizing: "border-box",
-            }}
-          >
-            <div className="sticky top-24 h-full min-h-0 overflow-visible">
-              <FeatureVisual feature={active} layout="accordion" className="h-full w-full" />
-            </div>
-          </div>
+      {/* Synced sticky visual — desktop only, 3/5 (60%) */}
+      <div
+        className="feature-accordion-panel hidden min-h-0 min-w-0 overflow-visible lg:col-span-3 lg:block"
+        style={{
+          padding: FEATURE_ACCORDION_FIGURE_GUTTER_PX,
+          boxSizing: "border-box",
+        }}
+      >
+        <div className="sticky top-24 h-full min-h-0 overflow-visible">
+          <FeatureVisual feature={active} layout="accordion" className="h-full w-full" />
+        </div>
+      </div>
         </div>
       </div>
     </section>
