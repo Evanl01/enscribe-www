@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { AiScribeFeatureMockup } from "@/components/landing/ambient-scribe-mockup";
-import { BillingSuggestionsFeatureMockup } from "@/components/landing/billing-suggestions-mockup";
+import { CodingLettersFeatureMockup } from "@/components/landing/coding-letters-mockup";
 import { NoteEhrPushFeatureMockup } from "@/components/landing/note-ehr-push-mockup";
 import { VisitPrepFeatureMockup } from "@/components/landing/visit-prep-mockup";
 
@@ -55,12 +55,12 @@ export function FeatureMockupNatural({ alt, className = "", children }) {
 }
 
 /**
- * Fixed-height accordion figure slot — fills the right column; mockups pin top-left.
+ * Fixed-height accordion figure slot — mockups center vertically, align right.
  */
 export function FeatureAccordionVisualFrame({ alt, className = "", children }) {
   return (
     <figure
-      className={`relative m-0 flex h-full w-full items-start justify-start overflow-visible p-0 ${className}`}
+      className={`relative m-0 flex h-full w-full items-start justify-end overflow-visible p-0 ${className}`}
       aria-label={alt}
     >
       {children}
@@ -112,7 +112,7 @@ export function FeatureVisual({ feature, aspect, className = "", layout = "inlin
       alt,
       className,
       layout,
-      <BillingSuggestionsFeatureMockup
+      <CodingLettersFeatureMockup
         key={feature.key}
         fit={layout === "accordion" ? "contain" : undefined}
       />,

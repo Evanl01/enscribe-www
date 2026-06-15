@@ -220,7 +220,7 @@ export function VideoHeroSection() {
             className="mt-5 text-lg leading-relaxed text-white/85"
             style={{ maxWidth: "100%" }}
           >
-            EnScribe frees up time in your day so you can care about what matters most – Your patients.
+            EnScribe frees up time in your day so you can focus on what matters most – Your patients.
           </p>
         </div>
 

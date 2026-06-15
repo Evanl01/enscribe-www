@@ -17,7 +17,7 @@ const sourceSerif = Source_Serif_4({
 export const metadata = {
   title: "EnScribe — Generate charts with one click",
   description:
-    "EnScribe frees up time in your day so you can care about what matters most — your patients.",
+    "EnScribe frees up time in your day so you can focus on what matters most — your patients.",
   icons: {
     icon: "/enscribe-icon.svg",
   },

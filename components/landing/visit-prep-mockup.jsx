@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SERIF } from "@/components/landing/constants";
 import { computeContainedScale, mockupViewports } from "@/components/landing/mockup-scale";
 
@@ -21,11 +21,11 @@ export const VISIT_PREP_MOCKUP = {
   ],
   inputPlaceholder: "Ask anything",
   animateTyping: true,
-  typingIntervalMs: 42,
+  typingIntervalMs: 35,
 };
 
 /** Card design canvas width — height is content-driven */
-export const PREP_CANVAS = { width: 400 };
+export const PREP_CANVAS = { width: 450 };
 export const PREP_MAX_WIDTH = 420;
 
 const SPACE = {
@@ -50,8 +50,8 @@ const COLORS = {
 
 const TYPE = {
   title: 15,
-  chat: 12.5,
-  chip: 11.5,
+  chat: 14.5,
+  chip: 13.5,
   input: 12.5,
 };
 
@@ -383,7 +383,7 @@ export function VisitPrepFeatureMockup({ className = "", fit, config = VISIT_PRE
     return () => window.clearInterval(id);
   }, [config, fullResponseLength]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = containerRef.current;
     const panel = panelRef.current;
     if (!container || !panel) return;
@@ -420,7 +420,7 @@ export function VisitPrepFeatureMockup({ className = "", fit, config = VISIT_PRE
   return (
     <div
       ref={containerRef}
-      className={`relative m-0 p-0 ${contain ? "h-full w-full" : "w-full"} ${className}`.trim()}
+      className={`m-0 p-0 ${contain ? "flex h-full w-full items-center justify-end" : "relative w-full"} ${className}`.trim()}
       style={
         contain
           ? undefined

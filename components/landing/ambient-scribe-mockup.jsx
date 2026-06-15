@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { computeContainedScale, mockupViewports } from "@/components/landing/mockup-scale";
 import {
   NOTE_CANVAS,
@@ -23,14 +23,23 @@ export const AMBIENT_SCRIBE_MOCKUP = {
   waveformSeed: 0x8f3a2c1b,
 };
 
-/** Ambient panel design canvas (width × height) */
-const CANVAS = { width: 400, height: 150 };
+/** Ambient recorder panel design canvas (width × height) */
+export const AMBIENT_CANVAS = { width: 450, height: 175 };
 
-/** Composite layout footprint — drives scale + note position; wider than the panel. */
-const FEATURE_LAYOUT_WIDTH = 500;
+/** Composite layout tweak — positions ambient panel within the feature layout box. */
+export const AMBIENT_LAYOUT = { top: 0, left: 0 };
+
+/** Overlap between ambient panel and SOAP note in the composite layout. */
+export const AI_SCRIBE_NOTE_OVERLAP_PX = 90;
+
+/** Composite layout footprint width — wider than the ambient panel. */
+export const AI_SCRIBE_FEATURE_LAYOUT_WIDTH = 500;
+
+/** Left controls column width inside the ambient panel */
+const AMBIENT_LEFT_COL_WIDTH = 160;
 
 /** Waveform strip height inside the ambient panel */
-const WAVEFORM_HEIGHT = 68;
+const WAVEFORM_HEIGHT = 92;
 
 function PauseIcon({ size = 22 }) {
   return (
@@ -104,8 +113,8 @@ function IconButton({ icon, label }) {
         color: "#ffffff",
         border: "1px solid #ffffff",
         borderRadius: 999,
-        width: 34,
-        height: 34,
+        width: 42,
+        height: 42,
       }}
     >
       {icon}
@@ -113,15 +122,15 @@ function IconButton({ icon, label }) {
   );
 }
 
-function AmbientScribePanel({ config, meterSamples = STATIC_WAVEFORM }) {
+export function AmbientScribePanel({ config = AMBIENT_SCRIBE_MOCKUP, meterSamples = STATIC_WAVEFORM }) {
   const { panelBlue, gradientBottom, encounterName, elapsed, barWidth, barGap } = config;
 
   return (
     <div
       className="relative overflow-hidden"
       style={{
-        width: CANVAS.width,
-        height: CANVAS.height,
+        width: AMBIENT_CANVAS.width,
+        height: AMBIENT_CANVAS.height,
         backgroundColor: panelBlue,
         color: "#ffffff",
         borderRadius: 16,
@@ -137,36 +146,34 @@ function AmbientScribePanel({ config, meterSamples = STATIC_WAVEFORM }) {
         aria-hidden
       />
 
-      <div
-        className="relative z-[1] flex h-full items-center gap-3 px-4 py-3"
-      >
+      <div className="relative z-[1] flex h-full items-center gap-5 px-5 py-4">
         <div
-          className="flex shrink-0 flex-col items-center justify-center gap-1.5"
-          style={{ width: 130 }}
+          className="flex shrink-0 flex-col items-center justify-center gap-3"
+          style={{ width: AMBIENT_LEFT_COL_WIDTH }}
         >
           <div
-            className="inline-flex max-w-full items-center gap-1.5"
+            className="inline-flex max-w-full items-center gap-2"
             style={{
               border: "1px solid rgba(255,255,255,0.35)",
               borderRadius: 999,
               backgroundColor: "rgba(255,255,255,0.12)",
-              padding: "5px 10px",
+              padding: "6px 14px",
               boxShadow: "inset 0 1px 0 rgba(255,255,255,0.1)",
             }}
           >
             <span
               className="truncate"
-              style={{ fontSize: 13, fontWeight: 500, maxWidth: 88, color: "#ffffff" }}
+              style={{ fontSize: 15, fontWeight: 500, maxWidth: 120, color: "#ffffff" }}
             >
               {encounterName}
             </span>
-            <span style={{ fontSize: 13, color: "#ffffff", transform: "scaleX(-1)" }} aria-hidden>
+            <span style={{ fontSize: 15, color: "#ffffff", transform: "scaleX(-1)" }} aria-hidden>
               ✎
             </span>
           </div>
           <span
             style={{
-              fontSize: 28,
+              fontSize: 33,
               fontWeight: 700,
               lineHeight: 1,
               fontVariantNumeric: "tabular-nums",
@@ -175,9 +182,9 @@ function AmbientScribePanel({ config, meterSamples = STATIC_WAVEFORM }) {
           >
             {elapsed}
           </span>
-          <div className="flex items-center justify-center gap-5">
-            <IconButton icon={<PauseIcon size={16} />} label="Pause recording" />
-            <IconButton icon={<StopIcon size={14} />} label="End recording" />
+          <div className="flex items-center justify-center gap-4">
+            <IconButton icon={<PauseIcon size={20} />} label="Pause recording" />
+            <IconButton icon={<StopIcon size={18} />} label="End recording" />
           </div>
         </div>
 
@@ -189,28 +196,26 @@ function AmbientScribePanel({ config, meterSamples = STATIC_WAVEFORM }) {
   );
 }
 
-/** Overlap between ambient panel and SOAP note in the composite layout */
-const FEATURE_NOTE_OVERLAP_PX = 90;
-
-/** Panel positions within the layout box (inset from render bleed padding). */
-const AMBIENT_LAYOUT = { top: 0, left: 0 };
-
-/** Layout box — panel positions only; shadows render into the bleed margin. */
+/** Layout box — panel positions only; shadows overflow into accordion padding. */
 const FEATURE_LAYOUT = {
-  width: FEATURE_LAYOUT_WIDTH,
+  width: AI_SCRIBE_FEATURE_LAYOUT_WIDTH,
   height:
-    CANVAS.height + NOTE_CANVAS.height - NOTE_LAYOUT.offsetY - FEATURE_NOTE_OVERLAP_PX,
+    AMBIENT_CANVAS.height +
+    NOTE_CANVAS.height -
+    NOTE_LAYOUT.offsetY -
+    AI_SCRIBE_NOTE_OVERLAP_PX,
 };
 
-/** Visible footprint — note extends below the layout box. */
-const FEATURE_FOOTPRINT_HEIGHT = FEATURE_LAYOUT.height + NOTE_LAYOUT.offsetY;
+/** Visible footprint — ambient top through note bottom. */
+const FEATURE_FOOTPRINT_HEIGHT =
+  AMBIENT_CANVAS.height + NOTE_CANVAS.height - AI_SCRIBE_NOTE_OVERLAP_PX;
 
 const FEATURE_LAYOUT_FOOTPRINT = {
-  width: FEATURE_LAYOUT.width,
+  width: AI_SCRIBE_FEATURE_LAYOUT_WIDTH + Math.max(0, NOTE_LAYOUT.offsetX),
   height: FEATURE_FOOTPRINT_HEIGHT,
 };
 
-const { viewport: FEATURE_VIEWPORT } = mockupViewports(FEATURE_LAYOUT_FOOTPRINT);
+const { viewport: AMBIENT_VIEWPORT } = mockupViewports(AMBIENT_CANVAS);
 
 /** Ambient scribe + SOAP note overlay for the AI scribe accordion visual. */
 export function AiScribeFeatureMockup({ className = "", fit }) {
@@ -218,7 +223,7 @@ export function AiScribeFeatureMockup({ className = "", fit }) {
   const [scale, setScale] = useState(1);
   const contain = fit === "contain";
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
@@ -226,8 +231,8 @@ export function AiScribeFeatureMockup({ className = "", fit }) {
       const rect = el.getBoundingClientRect();
       setScale(
         contain
-          ? computeContainedScale(rect, FEATURE_VIEWPORT)
-          : rect.width / FEATURE_VIEWPORT.width,
+          ? computeContainedScale(rect, FEATURE_LAYOUT_FOOTPRINT)
+          : rect.width / FEATURE_LAYOUT_FOOTPRINT.width,
       );
     };
 
@@ -237,8 +242,8 @@ export function AiScribeFeatureMockup({ className = "", fit }) {
     return () => ro.disconnect();
   }, [contain]);
 
-  const scaledWidth = FEATURE_VIEWPORT.width * scale;
-  const scaledHeight = FEATURE_VIEWPORT.height * scale;
+  const scaledWidth = FEATURE_LAYOUT_FOOTPRINT.width * scale;
+  const scaledHeight = FEATURE_LAYOUT_FOOTPRINT.height * scale;
 
   const viewport = (
     <div
@@ -270,12 +275,16 @@ export function AiScribeFeatureMockup({ className = "", fit }) {
               zIndex: 1,
             }}
           >
-            <AmbientScribePanel config={AMBIENT_SCRIBE_MOCKUP} />
+            <AmbientScribePanel />
           </div>
 
           <div
             className="absolute"
-            style={{ right: 0, bottom: -NOTE_LAYOUT.offsetY, zIndex: 2 }}
+            style={{
+              right: -NOTE_LAYOUT.offsetX,
+              bottom: -NOTE_LAYOUT.offsetY,
+              zIndex: 2,
+            }}
           >
             <ScribeNoteMockup />
           </div>
@@ -287,7 +296,7 @@ export function AiScribeFeatureMockup({ className = "", fit }) {
   return (
     <div
       ref={containerRef}
-      className={`relative m-0 h-full w-full p-0 ${className}`.trim()}
+      className={`m-0 h-full w-full p-0 ${contain ? "flex items-center justify-end" : "relative"} ${className}`.trim()}
     >
       {contain ? (
         viewport
@@ -308,19 +317,18 @@ export function AiScribeFeatureMockup({ className = "", fit }) {
   );
 }
 
-/** Ambient scribe recording UI — scales to fit the feature frame. */
-export function AmbientScribeMockup({ className = "" }) {
+/** Ambient scribe recording UI — scales to fit its container. */
+export function AmbientScribeMockup({ className = "", config = AMBIENT_SCRIBE_MOCKUP }) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(1);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
     const updateScale = () => {
-      const { width, height } = el.getBoundingClientRect();
-      const maxWidth = Math.min(width * 0.92, 520);
-      setScale(Math.min(maxWidth / CANVAS.width, height / CANVAS.height));
+      const rect = el.getBoundingClientRect();
+      setScale(computeContainedScale(rect, AMBIENT_VIEWPORT));
     };
 
     updateScale();
@@ -329,8 +337,8 @@ export function AmbientScribeMockup({ className = "" }) {
     return () => ro.disconnect();
   }, []);
 
-  const scaledWidth = CANVAS.width * scale;
-  const scaledHeight = CANVAS.height * scale;
+  const scaledWidth = AMBIENT_VIEWPORT.width * scale;
+  const scaledHeight = AMBIENT_VIEWPORT.height * scale;
 
   return (
     <div
@@ -343,13 +351,13 @@ export function AmbientScribeMockup({ className = "" }) {
       >
         <div
           style={{
-            width: CANVAS.width,
-            height: CANVAS.height,
+            width: AMBIENT_CANVAS.width,
+            height: AMBIENT_CANVAS.height,
             transform: `scale(${scale})`,
             transformOrigin: "top left",
           }}
         >
-          <AmbientScribePanel config={AMBIENT_SCRIBE_MOCKUP} />
+          <AmbientScribePanel config={config} />
         </div>
       </div>
     </div>

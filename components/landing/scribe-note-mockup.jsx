@@ -33,10 +33,10 @@ export const SCRIBE_NOTE_MOCKUP = {
 };
 
 /** SOAP note card design canvas (width × height) */
-export const NOTE_CANVAS = { width: 340, height: 320 };
+export const NOTE_CANVAS = { width: 420, height: 380 };
 
-/** Composite layout tweak — positive shifts the note downward. */
-export const NOTE_LAYOUT = { offsetY: 425 };
+/** Composite layout tweak — positive offsetX shifts right; positive offsetY shifts downward. */
+export const NOTE_LAYOUT = { offsetX: 90, offsetY: 480 };
 
 function SoapSection({ sectionKey, label, text, showCursor = false }) {
   return (
@@ -44,20 +44,20 @@ function SoapSection({ sectionKey, label, text, showCursor = false }) {
       <div className="flex items-baseline gap-1.5">
         <span
           className="shrink-0 font-bold"
-          style={{ fontSize: 11, color: "#3166F7", letterSpacing: "0.02em" }}
+          style={{ fontSize: 14, color: "#3166F7", letterSpacing: "0.02em" }}
         >
           {sectionKey}
         </span>
         <span
           className="font-semibold uppercase tracking-wide"
-          style={{ fontSize: 9.5, color: "#3C4C78", letterSpacing: "0.05em" }}
+          style={{ fontSize: 12.5, color: "#3C4C78", letterSpacing: "0.05em" }}
         >
           {label}
         </span>
       </div>
       <p
         className="mt-0.5 leading-snug"
-        style={{ fontSize: 11.5, color: "#183278", margin: 0, paddingLeft: 16 }}
+        style={{ fontSize: 14.5, color: "#183278", margin: 0, paddingLeft: 16 }}
       >
         {text}
         {showCursor ? <span className="scribe-note-cursor ml-px inline-block align-middle" aria-hidden /> : null}
@@ -93,7 +93,7 @@ export function ScribeNotePanel({ config = SCRIBE_NOTE_MOCKUP, typedChars = null
         <div className="flex items-baseline gap-2">
           <p
             className="shrink-0 font-bold uppercase tracking-wider"
-            style={{ fontSize: 10.5, color: "#3166F7", margin: 0, letterSpacing: "0.06em" }}
+            style={{ fontSize: 13.5, color: "#3166F7", margin: 0, letterSpacing: "0.06em" }}
           >
             {header}
           </p>
@@ -102,13 +102,13 @@ export function ScribeNotePanel({ config = SCRIBE_NOTE_MOCKUP, typedChars = null
               <span
                 aria-hidden
                 className="shrink-0"
-                style={{ fontSize: 10.5, color: "rgba(60,76,120,0.45)", lineHeight: 1 }}
+                style={{ fontSize: 13.5, color: "rgba(60,76,120,0.45)", lineHeight: 1 }}
               >
                 ·
               </span>
               <p
                 className="min-w-0 truncate font-semibold"
-                style={{ fontSize: 14, color: "#183278", margin: 0 }}
+                style={{ fontSize: 17, color: "#183278", margin: 0 }}
               >
                 {noteTitle}
               </p>

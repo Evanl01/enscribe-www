@@ -26,30 +26,27 @@ export const GENERATE_DOCUMENTS_MOCKUP = {
       statusTone: "complete",
       expanded: false,
     },
-    {
-      key: "lmn",
-      title: "Letter of Medical Necessity",
-      status: "Draft",
-      statusTone: "draft",
-      expanded: false,
-    },
   ],
   actions: [
+    "Letter of Medical Necessity",
     "Renal dietitian referral",
     "Medical leave extension",
     "Caregiver note",
-    "Other",
+    "+ Other",
   ],
 };
 
-/** Card design canvas width — height is content-driven */
-export const DOCS_CANVAS = { width: 470 };
+/** Card design canvas (width × height) */
+export const DOCS_CANVAS = { width: 550, height: 505 };
+
+/** Composite layout tweak — position within coding-letters overlay. */
+export const DOCS_LAYOUT = { top: 0, left: 0, paddingBottom: 24 };
 
 const SPACE = {
-  headerY: "13px 14px 12px",
-  body: "11px 12px 12px",
+  headerY: "13px 14px 12px 22px",
+  body: "11px 12px 12px 22px",
   sectionGap: 10,
-  contentPad: "10px 11px",
+  contentPad: "10px 11px 10px 18px",
   contentRadius: 6,
   chipGap: 7,
   chipPad: "5px 10px",
@@ -77,7 +74,7 @@ const STATUS = {
 };
 
 const TYPE = {
-  title: 18,
+  title: 16,
   section: 14,
   body: 14,
   label: 12,
@@ -221,8 +218,10 @@ export function GenerateDocumentsPanel({ config = GENERATE_DOCUMENTS_MOCKUP }) {
 
   return (
     <div
+      className="overflow-hidden"
       style={{
         width: DOCS_CANVAS.width,
+        height: DOCS_CANVAS.height,
         backgroundColor: "#ffffff",
         borderRadius: 12,
         border: `1px solid ${COLORS.border}`,

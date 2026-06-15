@@ -1,11 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import {
-  DOCS_CANVAS,
-  GenerateDocumentsPanel,
-} from "@/components/landing/generate-documents-mockup";
-import { computeContainedScale, MOCKUP_SHADOW_BLEED_TOP_LEFT } from "@/components/landing/mockup-scale";
+import { useEffect, useState } from "react";
 
 /** Tweak billing copy and styling without touching layout code. */
 export const BILLING_SUGGESTIONS_MOCKUP = {
@@ -25,19 +20,31 @@ export const BILLING_SUGGESTIONS_MOCKUP = {
     justification:
       "Extended HPI for CKD monitoring and symptom review; moderate MDM with BMP/eGFR interpretation, ACE inhibitor management, and renal dietitian referral coordination.",
   },
+  animateTyping: true,
+  typingIntervalMs: 42,
 };
 
-/** Card design canvas width — height is content-driven (text wraps as width shrinks). */
-export const BILLING_CANVAS = { width: 380 };
-export const BILLING_MAX_WIDTH = 450;
+/** Card design canvas (width × height) */
+export const BILLING_CANVAS = { width: 430, height: 455 };
+
+/** Composite layout tweak — positive offsetX shifts right; offsetY shifts downward. */
+export const BILLING_LAYOUT = { offsetX: 100, offsetY: 70 };
 
 const SPACE = {
-  headerY: "13px 14px 12px",
-  body: "11px 12px 12px",
-  sectionGap: 11,
-  listGap: 8,
-  sectionPad: "6px 9px",
+  headerY: "16px 18px 14px",
+  body: "16px 20px 20px 18px",
+  sectionGap: 16,
+  listGap: 12,
+  listTop: 12,
+  listInset: 6,
+  sectionPad: "9px 12px",
   sectionRadius: 6,
+  cptInset: 16,
+  cptTop: 12,
+  labelTop: 12,
+  bodyTop: 8,
+  justificationPad: "10px 12px",
+  justificationRadius: 6,
 };
 
 /** Matches scribe-note-mockup: accent #3166F7, labels #3C4C78, body #183278 */
@@ -45,18 +52,20 @@ const COLORS = {
   accent: "#3166F7",
   label: "#3C4C78",
   body: "#183278",
+  muted: "rgba(60,76,120,0.68)",
   chevron: "rgba(60,76,120,0.45)",
   sectionBg: "rgba(24,50,120,0.045)",
   border: "rgba(24,50,120,0.1)",
   divider: "rgba(24,50,120,0.08)",
   headerBg: "rgba(49,102,247,0.06)",
+  justificationBg: "rgba(24,50,120,0.03)",
 };
 
 const TYPE = {
-  title: 18,
+  title: 16,
   section: 14,
   body: 14,
-  label: 12,
+  supporting: 12,
 };
 
 function ChevronDown({ size = 9, color = COLORS.chevron }) {
@@ -94,7 +103,7 @@ function AccordionSectionHeader({ label }) {
     <div
       className="flex items-center"
       style={{
-        gap: 6,
+        gap: 8,
         backgroundColor: COLORS.sectionBg,
         borderRadius: SPACE.sectionRadius,
         padding: SPACE.sectionPad,
@@ -118,7 +127,7 @@ function AccordionSectionHeader({ label }) {
 
 function CodeRow({ code, description }) {
   return (
-    <li className="flex" style={{ gap: 6, paddingLeft: 6 }}>
+    <li className="flex" style={{ gap: 8, paddingLeft: SPACE.listInset }}>
       <span style={{ marginTop: 2, flexShrink: 0 }}>
         <ChevronRight />
       </span>
@@ -133,13 +142,20 @@ function CodeRow({ code, description }) {
   );
 }
 
-export function BillingSuggestionsPanel({ config = BILLING_SUGGESTIONS_MOCKUP }) {
+export function BillingSuggestionsPanel({
+  config = BILLING_SUGGESTIONS_MOCKUP,
+  typedChars = null,
+}) {
   const { header, icd10Codes, cpt } = config;
+  const showTyping = typedChars !== null;
+  const typedDescription = showTyping ? cpt.description.slice(0, typedChars) : cpt.description;
 
   return (
     <div
+      className="overflow-hidden"
       style={{
         width: BILLING_CANVAS.width,
+        height: BILLING_CANVAS.height,
         backgroundColor: "#ffffff",
         borderRadius: 12,
         border: `1px solid ${COLORS.border}`,
@@ -172,7 +188,7 @@ export function BillingSuggestionsPanel({ config = BILLING_SUGGESTIONS_MOCKUP })
           <AccordionSectionHeader label="ICD-10 Codes" />
           <ul
             className="flex flex-col"
-            style={{ gap: SPACE.listGap, margin: "8px 0 0", padding: "0 4px", listStyle: "none" }}
+            style={{ gap: SPACE.listGap, margin: `${SPACE.listTop}px 0 0`, padding: `0 ${SPACE.listInset}px`, listStyle: "none" }}
           >
             {icd10Codes.map((item) => (
               <CodeRow key={item.code} code={item.code} description={item.description} />
@@ -182,32 +198,70 @@ export function BillingSuggestionsPanel({ config = BILLING_SUGGESTIONS_MOCKUP })
 
         <div>
           <AccordionSectionHeader label="CPT" />
-          <div style={{ marginTop: 8, paddingLeft: 12 }}>
-            <p style={{ fontSize: TYPE.body, lineHeight: 1.4, color: COLORS.body, margin: 0 }}>
-              <span className="font-bold" style={{ color: COLORS.accent }}>{cpt.code}</span>
-              <span> — {cpt.description}</span>
-            </p>
-            <p
-              className="font-semibold uppercase tracking-wide"
+          <div style={{ marginTop: SPACE.cptTop, paddingLeft: SPACE.cptInset }}>
+            {showTyping ? (
+              <p
+                style={{
+                  position: "relative",
+                  fontSize: TYPE.body,
+                  lineHeight: 1.4,
+                  color: COLORS.body,
+                  margin: 0,
+                }}
+              >
+                <span aria-hidden style={{ visibility: "hidden", display: "block" }}>
+                  <span className="font-bold">{cpt.code}</span>
+                  <span className="font-medium"> — {cpt.description}</span>
+                </span>
+                <span style={{ position: "absolute", top: 0, left: 0, right: 0 }}>
+                  <span className="font-bold" style={{ color: COLORS.accent }}>{cpt.code}</span>
+                  <span className="font-medium">
+                    {" — "}
+                    {typedDescription}
+                    {typedChars < cpt.description.length ? (
+                      <span className="scribe-note-cursor ml-px inline-block align-middle" aria-hidden />
+                    ) : null}
+                  </span>
+                </span>
+              </p>
+            ) : (
+              <p style={{ fontSize: TYPE.body, lineHeight: 1.4, color: COLORS.body, margin: 0 }}>
+                <span className="font-bold" style={{ color: COLORS.accent }}>{cpt.code}</span>
+                <span className="font-medium"> — {cpt.description}</span>
+              </p>
+            )}
+            <div
               style={{
-                marginTop: 9,
-                fontSize: TYPE.label,
-                color: COLORS.label,
-                letterSpacing: "0.05em",
+                marginTop: SPACE.labelTop,
+                padding: SPACE.justificationPad,
+                borderRadius: SPACE.justificationRadius,
+                backgroundColor: COLORS.justificationBg,
+                border: `1px solid ${COLORS.divider}`,
               }}
             >
-              Justification
-            </p>
-            <p
-              style={{
-                marginTop: 5,
-                fontSize: TYPE.body,
-                lineHeight: 1.42,
-                color: COLORS.body,
-              }}
-            >
-              {cpt.justification}
-            </p>
+              <p
+                className="font-medium"
+                style={{
+                  margin: 0,
+                  fontSize: TYPE.supporting,
+                  color: COLORS.label,
+                  lineHeight: 1.2,
+                }}
+              >
+                Justification
+              </p>
+              <p
+                className="font-normal"
+                style={{
+                  marginTop: SPACE.bodyTop,
+                  fontSize: TYPE.supporting,
+                  lineHeight: 1.45,
+                  color: COLORS.muted,
+                }}
+              >
+                {cpt.justification}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -215,123 +269,36 @@ export function BillingSuggestionsPanel({ config = BILLING_SUGGESTIONS_MOCKUP })
   );
 }
 
-/** Composite layout — billing card sits bottom-right over generate documents */
-const BILLING_LAYOUT = { offsetX: 60, offsetY: 20 };
-
-const FEATURE_CANVAS = {
-  width: Math.max(BILLING_CANVAS.width, DOCS_CANVAS.width + 24),
-};
-
-/** Grows when positive offsetX pushes billing past the right edge */
-const FEATURE_LAYOUT_WIDTH =
-  FEATURE_CANVAS.width + Math.max(0, BILLING_LAYOUT.offsetX);
-
-/** Viewport — layout + billing overflow + shadow bleed (used for scale and outer size). */
-function viewportFootprint(layoutHeight) {
-  return {
-    width:
-      FEATURE_LAYOUT_WIDTH +
-      BILLING_LAYOUT.offsetX +
-      MOCKUP_SHADOW_BLEED_TOP_LEFT.right,
-    height:
-      layoutHeight +
-      BILLING_LAYOUT.offsetY +
-      MOCKUP_SHADOW_BLEED_TOP_LEFT.bottom,
-  };
-}
-
-/** Billing + generate-documents overlay for the Coding & letters accordion visual. */
-export function BillingSuggestionsFeatureMockup({ className = "", fit }) {
-  const containerRef = useRef(null);
-  const billingRef = useRef(null);
-  const docsRef = useRef(null);
-  const [scale, setScale] = useState(1);
-  const [footprintHeight, setFootprintHeight] = useState(0);
-  const contain = fit === "contain";
+/** Billing suggestions card — typing animation on CPT description when used standalone. */
+export function BillingSuggestionsMockup({ className = "", config = BILLING_SUGGESTIONS_MOCKUP }) {
+  const [typedChars, setTypedChars] = useState(() =>
+    config.animateTyping ? 0 : config.cpt.description.length,
+  );
 
   useEffect(() => {
-    const container = containerRef.current;
-    const billing = billingRef.current;
-    const docs = docsRef.current;
-    if (!container || !billing || !docs) return;
+    if (!config.animateTyping) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion) {
+      setTypedChars(config.cpt.description.length);
+      return;
+    }
 
-    const updateScale = () => {
-      const rect = container.getBoundingClientRect();
-      const billingHeight = billing.offsetHeight;
-      const docsHeight = docs.offsetHeight;
-      const billingTop = docsHeight + BILLING_LAYOUT.offsetY - billingHeight;
-      const layoutHeight = Math.max(docsHeight, billingTop + billingHeight);
-      const viewport = viewportFootprint(layoutHeight);
-      const nextScale = contain
-        ? computeContainedScale(rect, viewport, BILLING_MAX_WIDTH + 40)
-        : Math.min(rect.width, BILLING_MAX_WIDTH + 40) / viewport.width;
-
-      setFootprintHeight(layoutHeight);
-      setScale(nextScale);
-    };
-
-    updateScale();
-    const ro = new ResizeObserver(updateScale);
-    ro.observe(container);
-    ro.observe(billing);
-    ro.observe(docs);
-    return () => ro.disconnect();
-  }, [contain]);
-
-  const viewport =
-    footprintHeight > 0 ? viewportFootprint(footprintHeight) : null;
-  const scaledWidth = viewport ? Math.ceil(viewport.width * scale) : undefined;
-  const scaledHeight = viewport ? Math.ceil(viewport.height * scale) : undefined;
+    const fullLen = config.cpt.description.length;
+    let count = 0;
+    const id = window.setInterval(() => {
+      count += 1;
+      setTypedChars(count);
+      if (count >= fullLen) window.clearInterval(id);
+    }, config.typingIntervalMs);
+    return () => window.clearInterval(id);
+  }, [config]);
 
   return (
-    <div
-      ref={containerRef}
-      className={`relative m-0 p-0 ${contain ? "h-full w-full" : "w-full"} ${className}`.trim()}
-      style={
-        contain
-          ? undefined
-          : { maxWidth: BILLING_MAX_WIDTH + 40, width: scaledWidth, height: scaledHeight }
-      }
-    >
-      <div
-        className="relative m-0 overflow-visible p-0"
-        style={{
-          width: scaledWidth,
-          height: scaledHeight,
-          flexShrink: 0,
-        }}
-      >
-        <div
-          className="absolute left-0 top-0 m-0 p-0"
-          style={{
-            width: FEATURE_LAYOUT_WIDTH,
-            height: footprintHeight || undefined,
-            transform: footprintHeight > 0 ? `scale(${scale})` : undefined,
-            transformOrigin: "top left",
-          }}
-        >
-          <div
-            className="relative overflow-visible"
-            style={{ width: FEATURE_LAYOUT_WIDTH, height: footprintHeight || undefined }}
-          >
-            <div ref={docsRef} className="absolute left-0 top-0" style={{ zIndex: 1 }}>
-              <GenerateDocumentsPanel />
-            </div>
-
-            <div
-              ref={billingRef}
-              className="absolute"
-              style={{
-                right: -BILLING_LAYOUT.offsetX,
-                bottom: -BILLING_LAYOUT.offsetY,
-                zIndex: 2,
-              }}
-            >
-              <BillingSuggestionsPanel />
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className={className}>
+      <BillingSuggestionsPanel
+        config={config}
+        typedChars={config.animateTyping ? typedChars : null}
+      />
     </div>
   );
 }

@@ -1,0 +1,21 @@
+@keyframes note-ehr-push-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(49, 102, 247, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(49, 102, 247, 0.3);
+  }
+}
+
+.note-ehr-push-button-emphasis {
+  position: relative;
+  z-index: 1;
+  animation: note-ehr-push-ring 0.75s ease-out 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note-ehr-push-button-emphasis {
+    animation: none;
+  }
+}

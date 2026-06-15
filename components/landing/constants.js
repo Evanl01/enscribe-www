@@ -33,11 +33,11 @@ export const LANDING_STICKY_HEADER_PX = 64;
 export const LANDING_FEATURES_SCROLL_LIFT_PX = 1;
 export const HERO_SECTION_TOP_RADIUS_PX = 60;
 
-/** Desktop feature accordion — left list and right figure share this height. */
-export const FEATURE_ACCORDION_PANEL_HEIGHT_PX = 640;
+/** Desktop feature accordion — fixed height for the right-column figure slot. */
+export const FEATURE_ACCORDION_PANEL_HEIGHT_PX = 460;
 
-/** Inset around the right-column figure (replaces grid gap between columns). */
-export const FEATURE_ACCORDION_FIGURE_GUTTER_PX = 32;
+/** Desktop accordion grid column split — left % / right % */
+export const FEATURE_ACCORDION_COL_SPLIT = [42, 58];
 
 export const FEATURES = [
   {

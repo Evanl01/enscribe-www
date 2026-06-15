@@ -4,12 +4,15 @@ import { useState } from "react";
 import {
   FEATURES,
   FEATURE_ACCORDION_PANEL_HEIGHT_PX,
-  FEATURE_ACCORDION_FIGURE_GUTTER_PX,
+  FEATURE_ACCORDION_COL_SPLIT,
   HERO_SECTION_OVERLAP_PX,
   HERO_SECTION_TOP_RADIUS_PX,
   SERIF,
 } from "@/components/landing/constants";
 import { FeatureVisual } from "@/components/landing/placeholders";
+
+/** Vertical padding on accordion title buttons (px). */
+const ACCORDION_BUTTON_PAD_Y = 32;
 
 export function FeatureAccordionSection() {
   const [activeKey, setActiveKey] = useState(FEATURES[0].key);
@@ -36,22 +39,26 @@ export function FeatureAccordionSection() {
         </h2>
 
         <div
-          className="mt-14 grid min-w-0 grid-cols-1 gap-10 lg:grid-cols-5 lg:items-stretch lg:gap-0"
-          style={{ "--feature-panel-h": `${FEATURE_ACCORDION_PANEL_HEIGHT_PX}px` }}
+          className="mt-14 grid min-w-0 feature-accordion-columns gap-10 lg:items-start lg:gap-0"
+          style={{
+            "--feature-panel-h": `${FEATURE_ACCORDION_PANEL_HEIGHT_PX}px`,
+            "--accordion-col-left": `${FEATURE_ACCORDION_COL_SPLIT[0]}%`,
+            "--accordion-col-right": `${FEATURE_ACCORDION_COL_SPLIT[1]}%`,
+          }}
         >
-      {/* Accordion column — 2/5 (40%) */}
-      <ul className="feature-accordion-panel min-w-0 divide-y divide-[#183278]/10 border-y border-[#183278]/10 lg:col-span-2 lg:flex lg:flex-col lg:overflow-hidden">
+      {/* Accordion column — 42% */}
+      <ul className="feature-accordion-list-panel min-w-0 divide-y divide-[#183278]/10 border-y border-[#183278]/10 lg:flex lg:flex-col lg:justify-start">
         {FEATURES.map((f) => {
           const isOpen = f.key === activeKey;
           return (
-            <li key={f.key} className="flex min-h-0 min-w-0 flex-1 flex-col">
+            <li key={f.key} className="flex shrink-0 flex-col min-w-0">
               <button
                 type="button"
                 aria-expanded={isOpen}
                 aria-controls={`feature-panel-${f.key}`}
                 onClick={() => setActiveKey(f.key)}
-                className="flex w-full min-w-0 min-h-[4.5rem] shrink-0 cursor-pointer items-center justify-between gap-4 border-0 bg-transparent text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 sm:min-h-[7.5rem] lg:min-h-0 lg:py-5"
-                style={{ paddingTop: 10, paddingBottom: 10 }}
+                className="flex w-full min-w-0 min-h-[5.5rem] shrink-0 cursor-pointer items-center justify-between gap-4 border-0 bg-transparent text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 sm:min-h-[6rem]"
+                style={{ paddingTop: ACCORDION_BUTTON_PAD_Y, paddingBottom: ACCORDION_BUTTON_PAD_Y }}
               >
                 <span
                   className={`min-w-0 flex-1 pr-2 text-xl font-semibold transition sm:text-2xl ${
@@ -65,21 +72,27 @@ export function FeatureAccordionSection() {
                   aria-hidden
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition ${
                     isOpen
-                      ? "rotate-45 border-[#3166F7] bg-[#3166F7] text-white"
+                      ? "border-[#3166F7] bg-[#3166F7] text-white"
                       : "border-[#183278]/20 bg-white text-[#183278]"
                   }`}
                 >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" d="M12 5v14M5 12h14" />
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-4 w-4 transition-transform duration-200"
+                    style={{ transform: isOpen ? "rotate(270deg)" : "rotate(0deg)" }}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M15 18l-6-6 6-6" />
                   </svg>
                 </span>
               </button>
 
               {isOpen ? (
-                <div
-                  className="min-h-0 min-w-0 flex-1 overflow-y-auto"
-                  style={{ paddingBottom: 15 }}
-                >
+                <div className="min-w-0" style={{ paddingBottom: 15 }}>
                   <p
                     className="text-base leading-relaxed text-[#3C4C78]"
                     style={{ margin: 0 }}
@@ -108,11 +121,14 @@ export function FeatureAccordionSection() {
         })}
       </ul>
 
-      {/* Synced sticky visual — desktop only, 3/5 (60%) */}
+      {/* Synced sticky visual — desktop only, 58% */}
       <div
-        className="feature-accordion-panel hidden min-h-0 min-w-0 overflow-visible lg:col-span-3 lg:block"
+        className="feature-accordion-figure-panel hidden min-h-0 min-w-0 overflow-visible lg:block"
         style={{
-          padding: FEATURE_ACCORDION_FIGURE_GUTTER_PX,
+          paddingTop: 20,
+          paddingRight: 32,
+          paddingBottom: 20,
+          paddingLeft: 90,
           boxSizing: "border-box",
         }}
       >
