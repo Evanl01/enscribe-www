@@ -1,5 +1,3 @@
-import { BetaOnly } from "@/components/beta-only";
-import { BetaOnlyFallback } from "@/components/landing/beta-only-fallback";
 import { LandingPage2 } from "@/components/landing/landing-page-2";
 
 export const metadata = {
@@ -9,8 +7,9 @@ export const metadata = {
 
 export default function LandingPage2Route() {
   return (
-    <BetaOnly fallback={<BetaOnlyFallback />}>
+    <>
+      <link rel="preload" as="image" href="/videos/hero-poster-4k.webp" type="image/webp" />
       <LandingPage2 />
-    </BetaOnly>
+    </>
   );
 }

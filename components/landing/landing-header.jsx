@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AppLink } from "@/components/landing/app-link";
-import { LANDING_TRY_FOR_FREE_HREF } from "@/components/landing/constants";
+import { LANDING_FULL_PREVIEW_HREF, LANDING_TRY_FOR_FREE_HREF } from "@/components/landing/constants";
 
 const LOGO_SRC = "/enscribe-icon.svg";
 
@@ -18,7 +18,7 @@ export function LandingHeader() {
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
         <Link
-          href="/"
+          href={LANDING_FULL_PREVIEW_HREF}
           className="inline-flex h-full items-center rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7]"
           aria-label="EnScribe home"
         >

@@ -8,19 +8,20 @@ const PIN_TOP_PX = 64;
 /** Scroll track height — controls pacing through the stack. */
 const TRACK_HEIGHT_VH = 220;
 /** Vertical peek between stacked cards. */
-const STACK_STEP_PX = 80;
+const STACK_STEP_PX = 100;
 /** Animation completes at this fraction of track progress; remainder is safety runway. */
 const ANIMATION_END = 0.85;
 /** Spatial buffer below the deck frame inside the sticky viewport. */
 const DECK_BOTTOM_BUFFER_VH = 12;
 const BASE_SCALE = 0.92;
 const SCALE_STEP = 0.04;
-/** Extra px so fixed-height cards never clip bottom padding after measure. */
-const CARD_HEIGHT_BUFFER_PX = 8;
+/** Extra px per card so measured height never clips bottom padding. */
+const CARD_HEIGHT_BUFFER_PX = 16;
 /** How far below the deck cards 2 & 3 start (multiplier on measured card height). */
 const STARTING_Y_RATIO = 2.2;
-const CARD_MAX_WIDTH = "calc(52rem + 100px)";
-const LEFT_COL_WIDTH = "calc(7rem + 50px)";
+const CARD_MAX_WIDTH = "calc((52rem + 100px) * 1.2)";
+const LEFT_COL_WIDTH = "calc(10.5rem + 50px)";
+const PORTRAIT_SIZE = "11rem";
 
 const bands = [
   {
@@ -29,6 +30,9 @@ const bands = [
       "I've used several AI based scribe programs and this is by far the best of the bunch!",
     name: "Dr. Ramy Mansour",
     role: "Gastroenterology",
+    portrait: "/images/Doc1.png",
+    portraitBackgroundScale: "120%",
+    portraitObjectPosition: "40% center",
   },
   {
     kicker: "Enhanced scribe accuracy",
@@ -36,6 +40,9 @@ const bands = [
       "It feels as though I have a personal scribe in the background capturing the details.",
     name: "Nadine A Smith",
     role: "PMHNP-BC",
+    portrait: "/images/Doc2.png",
+    portraitBackgroundScale: "110%",
+    portraitObjectPosition: "20% center",
   },
   {
     kicker: "Real-time human support",
@@ -43,6 +50,8 @@ const bands = [
       "The EnScribe team has been quick to address my issues and expedient in solving them. I really appreciate them!",
     name: "Kathleen McCoy",
     role: "NP",
+    portrait: "/images/Doc3.png",
+    portraitBackgroundScale: "125%",
   },
 ];
 
@@ -68,22 +77,17 @@ function segmentProgress(t, start, end) {
 }
 
 function QuoteCardContent({ band }) {
+  const portraitScale = band.portraitBackgroundScale ?? "cover";
   const portraitStyle = {
-    display: "flex",
     flexShrink: 0,
-    alignItems: "center",
-    justifyContent: "center",
-    width: "7rem",
-    height: "7rem",
+    width: PORTRAIT_SIZE,
+    height: PORTRAIT_SIZE,
     borderRadius: "9999px",
-    border: "1px dashed rgba(124, 157, 249, 0.55)",
-    background: "linear-gradient(to bottom right, #F9FAFF, rgba(124, 157, 249, 0.15))",
-    fontSize: "14px",
-    fontWeight: 600,
-    letterSpacing: "0.05em",
-    textTransform: "uppercase",
-    color: "#3166F7",
-    overflow: "hidden",
+    border: "1px solid rgba(24, 50, 120, 0.08)",
+    backgroundImage: `url(${band.portrait})`,
+    backgroundSize: portraitScale,
+    backgroundPosition: band.portraitObjectPosition ?? "center",
+    backgroundRepeat: "no-repeat",
   };
 
   return (
@@ -91,12 +95,9 @@ function QuoteCardContent({ band }) {
       style={{
         display: "grid",
         gridTemplateColumns: `${LEFT_COL_WIDTH} 1fr`,
-        gridTemplateRows: "auto minmax(0, 1fr) auto",
+        gridTemplateRows: "auto auto auto",
         columnGap: "1.5rem",
         rowGap: "1rem",
-        height: "100%",
-        minHeight: 0,
-        flex: 1,
       }}
     >
       {/* Row 1 — title only, right column */}
@@ -122,13 +123,15 @@ function QuoteCardContent({ band }) {
           gridColumn: 1,
           gridRow: "2 / 4",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-end",
           justifyContent: "center",
         }}
       >
-        <div aria-label={`${band.name} portrait`} style={portraitStyle}>
-          <span style={{ paddingInline: "0.25rem", textAlign: "center" }}>Portrait</span>
-        </div>
+        <div
+          role="img"
+          aria-label={`${band.name}, ${band.role}`}
+          style={portraitStyle}
+        />
       </div>
 
       {/* Row 2 — testimonial, right column */}
@@ -139,7 +142,6 @@ function QuoteCardContent({ band }) {
           gridRow: 2,
           margin: 0,
           minWidth: 0,
-          minHeight: 0,
           alignSelf: "start",
           fontSize: "1.575rem",
           fontWeight: 600,
@@ -155,8 +157,11 @@ function QuoteCardContent({ band }) {
         style={{
           gridColumn: 2,
           gridRow: 3,
+          alignSelf: "end",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-end",
           margin: 0,
-          marginTop: "auto",
           paddingTop: "0.75rem",
           paddingBottom: "0.125rem",
           borderTop: "1px solid rgba(24, 50, 120, 0.08)",
@@ -177,13 +182,14 @@ export function ClinicianQuoteBands() {
   const card1Ref = useRef(null);
   const card2Ref = useRef(null);
   const card3Ref = useRef(null);
-  const [cardHeight, setCardHeight] = useState(0);
+  const [cardHeights, setCardHeights] = useState([0, 0, 0]);
   const [reducedMotion, setReducedMotion] = useState(false);
 
-  const deckFrameHeight = cardHeight + STACK_STEP_PX * (bands.length - 1);
-  const startingY = cardHeight * STARTING_Y_RATIO;
-  const hiddenTransform =
-    cardHeight > 0 ? `translateY(${startingY}px) scale(${BASE_SCALE})` : undefined;
+  const tallestCardHeight = Math.max(...cardHeights, 0);
+  const deckFrameHeight =
+    tallestCardHeight > 0
+      ? tallestCardHeight + STACK_STEP_PX * (bands.length - 1)
+      : 0;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -198,26 +204,31 @@ export function ClinicianQuoteBands() {
     if (cards.length === 0) return undefined;
 
     const syncHeight = () => {
-      const maxHeight = Math.max(
-        ...cards.map((card) => {
-          const prevHeight = card.style.height;
-          card.style.height = "auto";
-          card.style.minHeight = "0";
-          const naturalHeight = Math.ceil(
-            Math.max(card.getBoundingClientRect().height, card.scrollHeight),
-          );
-          card.style.height = prevHeight;
-          card.style.minHeight = "";
-          return naturalHeight;
-        }),
-      );
-      setCardHeight(maxHeight + CARD_HEIGHT_BUFFER_PX);
+      const heights = cards.map((card) => {
+        const prevHeight = card.style.height;
+        const prevMinHeight = card.style.minHeight;
+        card.style.height = "auto";
+        card.style.minHeight = "auto";
+        const naturalHeight = Math.ceil(
+          Math.max(card.getBoundingClientRect().height, card.scrollHeight),
+        );
+        card.style.height = prevHeight;
+        card.style.minHeight = prevMinHeight;
+        return naturalHeight + CARD_HEIGHT_BUFFER_PX;
+      });
+
+      setCardHeights(heights);
     };
 
     syncHeight();
+
     const ro = new ResizeObserver(syncHeight);
-    cards.forEach((card) => ro.observe(card));
+    cards.forEach((card) => {
+      ro.observe(card);
+      if (card.firstElementChild) ro.observe(card.firstElementChild);
+    });
     window.addEventListener("resize", syncHeight);
+    document.fonts?.ready?.then(syncHeight);
 
     return () => {
       ro.disconnect();
@@ -234,7 +245,9 @@ export function ClinicianQuoteBands() {
 
     const applyTransforms = () => {
       const track = trackRef.current;
-      if (!track || !card2 || !card3 || cardHeight <= 0) return;
+      const h2 = cardHeights[1];
+      const h3 = cardHeights[2];
+      if (!track || !card2 || !card3 || h2 <= 0 || h3 <= 0) return;
 
       const trackRect = track.getBoundingClientRect();
       const scrollable = trackRect.height - window.innerHeight;
@@ -249,12 +262,13 @@ export function ClinicianQuoteBands() {
       const card2Progress = segmentProgress(animationProgress, 0, 0.5);
       const card3Progress = segmentProgress(animationProgress, 0.5, 1);
 
-      const startingY = cardHeight * STARTING_Y_RATIO;
+      const startingY2 = h2 * STARTING_Y_RATIO;
+      const startingY3 = h3 * STARTING_Y_RATIO;
 
-      const y2 = startingY - (startingY - STACK_STEP_PX) * card2Progress;
+      const y2 = startingY2 - (startingY2 - STACK_STEP_PX) * card2Progress;
       const s2 = BASE_SCALE + SCALE_STEP * card2Progress;
 
-      const y3 = startingY - (startingY - STACK_STEP_PX * 2) * card3Progress;
+      const y3 = startingY3 - (startingY3 - STACK_STEP_PX * 2) * card3Progress;
       const s3 = BASE_SCALE + SCALE_STEP * 2 * card3Progress;
 
       card2.style.transform = `translateY(${y2}px) scale(${s2})`;
@@ -275,7 +289,7 @@ export function ClinicianQuoteBands() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, [reducedMotion, cardHeight]);
+  }, [reducedMotion, cardHeights]);
 
   if (reducedMotion) {
     return (
@@ -328,7 +342,6 @@ export function ClinicianQuoteBands() {
               style={{
                 ...CARD_LAYER_STYLE,
                 zIndex: 1,
-                height: cardHeight || "auto",
                 boxSizing: "border-box",
                 overflow: "visible",
                 display: "flex",
@@ -345,12 +358,14 @@ export function ClinicianQuoteBands() {
               style={{
                 ...CARD_LAYER_STYLE,
                 zIndex: 2,
-                height: cardHeight || "auto",
                 boxSizing: "border-box",
                 overflow: "visible",
                 display: "flex",
                 flexDirection: "column",
-                transform: hiddenTransform,
+                transform:
+                  cardHeights[1] > 0
+                    ? `translateY(${cardHeights[1] * STARTING_Y_RATIO}px) scale(${BASE_SCALE})`
+                    : undefined,
               }}
             >
               <QuoteCardContent band={bands[1]} />
@@ -362,12 +377,14 @@ export function ClinicianQuoteBands() {
               style={{
                 ...CARD_LAYER_STYLE,
                 zIndex: 3,
-                height: cardHeight || "auto",
                 boxSizing: "border-box",
                 overflow: "visible",
                 display: "flex",
                 flexDirection: "column",
-                transform: hiddenTransform,
+                transform:
+                  cardHeights[2] > 0
+                    ? `translateY(${cardHeights[2] * STARTING_Y_RATIO}px) scale(${BASE_SCALE})`
+                    : undefined,
               }}
             >
               <QuoteCardContent band={bands[2]} />

@@ -10,9 +10,6 @@ import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { StatsSection } from "@/components/landing/stats-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { FinalCtaSection } from "@/components/landing/final-cta-section";
-import { MobileWipGate } from "@/components/landing/mobile-wip-gate";
-import { BetaOnly } from "@/components/beta-only";
-import { LandingBetaWip } from "@/components/landing/landing-beta-wip";
 import {
   LANDING_FEATURES_ANCHOR_ID,
   LANDING_FEATURES_SCROLL_LIFT_PX,
@@ -21,8 +18,6 @@ import {
 export function LandingPage() {
   return (
     <div className="min-h-screen bg-[#F9FAFF] text-[#183278] antialiased">
-      {/* MOBILE-WIP — remove MobileWipGate when mobile landing ships */}
-      <MobileWipGate />
       <LandingHeader />
       <main className="relative">
         {/* h-screen wrapper limits sticky hero to the first viewport — stops video bleeding into later sections */}
@@ -42,16 +37,12 @@ export function LandingPage() {
             }}
           />
           <FeatureAccordionSection />
-          <BetaOnly fallback={<LandingBetaWip />}>
-            <>
-              <SmallPracticesSection />
-              <ClinicianQuoteBands />
-              <TestimonialsSection />
-              <StatsSection />
-              <PricingSection />
-              <FinalCtaSection />
-            </>
-          </BetaOnly>
+          <SmallPracticesSection />
+          <ClinicianQuoteBands />
+          <TestimonialsSection />
+          <StatsSection />
+          <PricingSection />
+          <FinalCtaSection />
         </div>
       </main>
       <LandingFooter />

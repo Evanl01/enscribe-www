@@ -3,6 +3,9 @@ export const SERIF = { fontFamily: "var(--font-source-serif), Georgia, serif" };
 /** Primary "Try for free" CTAs on the marketing landing page. */
 export const LANDING_TRY_FOR_FREE_HREF = "/signup";
 
+/** Full landing preview (no WIP gate on lower sections). */
+export const LANDING_FULL_PREVIEW_HREF = "/landing-page";
+
 /** Abstract shapes — fixed to viewport so they stay visible during sticky scroll. */
 export const QUOTES_TESTIMONIALS_BG_STYLE = {
   backgroundColor: "#F9FAFF",
@@ -21,7 +24,7 @@ export const QUOTES_TESTIMONIALS_BG_STYLE = {
  * MOBILE-WIP — set to false (or delete MobileWipGate) when mobile landing is ready.
  * Grep: MOBILE_WIP_ENABLED
  */
-export const MOBILE_WIP_ENABLED = true;
+export const MOBILE_WIP_ENABLED = false;
 
 /** Post-hero section pulls up over the video; rounded top sits on the hero. */
 export const HERO_SECTION_OVERLAP_PX = 140;
