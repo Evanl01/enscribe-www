@@ -7,18 +7,15 @@ import { SERIF, QUOTES_TESTIMONIALS_BG_STYLE } from "@/components/landing/consta
 const PIN_TOP_PX = 64;
 /** Scroll track height — controls pacing through the stack. */
 const TRACK_HEIGHT_VH = 220;
-/** Vertical peek between stacked cards. */
-const STACK_STEP_PX = 100;
 /** Animation completes at this fraction of track progress; remainder is safety runway. */
 const ANIMATION_END = 0.85;
 /** Spatial buffer below the deck frame inside the sticky viewport. */
 const DECK_BOTTOM_BUFFER_VH = 12;
-const BASE_SCALE = 0.92;
-const SCALE_STEP = 0.04;
-/** Extra px per card so measured height never clips bottom padding. */
-const CARD_HEIGHT_BUFFER_PX = 16;
-/** How far below the deck cards 2 & 3 start (multiplier on measured card height). */
-const STARTING_Y_RATIO = 2.2;
+
+/** Stacked resting translateY per card — edit `restY` / `step` only. */
+const stackRestY = (cardIndex) => 100 + cardIndex * 100;
+const stackStartY = (cardHeight) => cardHeight * 2.2;
+
 const CARD_MAX_WIDTH = "calc((52rem + 100px) * 1.2)";
 const LEFT_COL_WIDTH = "calc(10.5rem + 50px)";
 const PORTRAIT_SIZE = "11rem";
@@ -188,7 +185,7 @@ export function ClinicianQuoteBands() {
   const tallestCardHeight = Math.max(...cardHeights, 0);
   const deckFrameHeight =
     tallestCardHeight > 0
-      ? tallestCardHeight + STACK_STEP_PX * (bands.length - 1)
+      ? stackRestY(bands.length - 1) + tallestCardHeight
       : 0;
 
   useEffect(() => {
@@ -214,7 +211,7 @@ export function ClinicianQuoteBands() {
         );
         card.style.height = prevHeight;
         card.style.minHeight = prevMinHeight;
-        return naturalHeight + CARD_HEIGHT_BUFFER_PX;
+        return naturalHeight + 16;
       });
 
       setCardHeights(heights);
@@ -262,14 +259,14 @@ export function ClinicianQuoteBands() {
       const card2Progress = segmentProgress(animationProgress, 0, 0.5);
       const card3Progress = segmentProgress(animationProgress, 0.5, 1);
 
-      const startingY2 = h2 * STARTING_Y_RATIO;
-      const startingY3 = h3 * STARTING_Y_RATIO;
+      const startingY2 = stackStartY(h2);
+      const startingY3 = stackStartY(h3);
 
-      const y2 = startingY2 - (startingY2 - STACK_STEP_PX) * card2Progress;
-      const s2 = BASE_SCALE + SCALE_STEP * card2Progress;
+      const y2 = startingY2 - (startingY2 - stackRestY(1)) * card2Progress;
+      const s2 = 0.92 + 0.04 * card2Progress;
 
-      const y3 = startingY3 - (startingY3 - STACK_STEP_PX * 2) * card3Progress;
-      const s3 = BASE_SCALE + SCALE_STEP * 2 * card3Progress;
+      const y3 = startingY3 - (startingY3 - stackRestY(2)) * card3Progress;
+      const s3 = 0.92 + 0.08 * card3Progress;
 
       card2.style.transform = `translateY(${y2}px) scale(${s2})`;
       card3.style.transform = `translateY(${y3}px) scale(${s3})`;
@@ -312,7 +309,7 @@ export function ClinicianQuoteBands() {
   return (
     <section
       ref={trackRef}
-      className="relative"
+      className="relative z-0"
       style={{ height: `${TRACK_HEIGHT_VH}vh`, ...QUOTES_TESTIMONIALS_BG_STYLE }}
       aria-label="Clinician quotes"
     >
@@ -346,7 +343,7 @@ export function ClinicianQuoteBands() {
                 overflow: "visible",
                 display: "flex",
                 flexDirection: "column",
-                transform: "translateY(0px) scale(0.92)",
+                transform: `translateY(${stackRestY(0)}px) scale(0.92)`,
               }}
             >
               <QuoteCardContent band={bands[0]} />
@@ -364,7 +361,7 @@ export function ClinicianQuoteBands() {
                 flexDirection: "column",
                 transform:
                   cardHeights[1] > 0
-                    ? `translateY(${cardHeights[1] * STARTING_Y_RATIO}px) scale(${BASE_SCALE})`
+                    ? `translateY(${stackStartY(cardHeights[1])}px) scale(0.92)`
                     : undefined,
               }}
             >
@@ -383,7 +380,7 @@ export function ClinicianQuoteBands() {
                 flexDirection: "column",
                 transform:
                   cardHeights[2] > 0
-                    ? `translateY(${cardHeights[2] * STARTING_Y_RATIO}px) scale(${BASE_SCALE})`
+                    ? `translateY(${stackStartY(cardHeights[2])}px) scale(0.92)`
                     : undefined,
               }}
             >

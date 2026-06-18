@@ -23,10 +23,10 @@ export function TestimonialsSection() {
   ];
 
   return (
-    <section className="relative py-24" style={QUOTES_TESTIMONIALS_BG_STYLE}>
+    <section className="relative z-0 py-24" style={QUOTES_TESTIMONIALS_BG_STYLE}>
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <h2
-          className="max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl"
+          className="mx-auto max-w-[850px] text-center text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl"
           style={SERIF}
         >
           Trusted <span className="text-[#3166F7]">by providers</span>

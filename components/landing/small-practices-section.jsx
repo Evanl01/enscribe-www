@@ -1,4 +1,4 @@
-import { SERIF } from "@/components/landing/constants";
+import { LANDING_WHITE_SECTION_BG, SERIF } from "@/components/landing/constants";
 
 const SPECIALTIES = [
   "Cardiology",
@@ -46,7 +46,7 @@ const CHIP_NEUTRAL_STYLE = {
   backgroundColor: "#ffffff",
   border: "1px solid rgba(24, 50, 120, 0.14)",
   color: "#183278",
-  boxShadow: "0 2px 8px rgba(11, 26, 71, 0.08)",
+  boxShadow: "0 2px 8px rgba(11, 26, 71, 0.20)",
 };
 
 const CHIP_ACCENT_STYLE = {
@@ -72,7 +72,11 @@ function SpecialtyChip({ children, highlighted }) {
 
 export function SmallPracticesSection() {
   return (
-    <section className="bg-[#F9FAFF] py-20" aria-label="Clinical specialties">
+    <section
+      className="relative z-20 py-20"
+      style={{ backgroundColor: LANDING_WHITE_SECTION_BG }}
+      aria-label="Clinical specialties"
+    >
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <div className="text-center">
           <h2

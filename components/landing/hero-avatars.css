@@ -1,0 +1,86 @@
+/**
+ * Hero trust avatars — co-located with VideoHeroSection for reliable HMR.
+ */
+.hero-avatar-stack {
+  --hero-avatar-size: 40px;
+  --hero-avatar-overlap: 7px;
+  --hero-avatar-border: 1px;
+  --hero-avatar-ring: #000;
+  /* Zero offset = halo all around (not bottom-right cast shadow) */
+  --hero-avatar-halo: 0 0 0 2px rgba(0, 0, 0, 0.95), 0 0 8px 4px rgba(0, 0, 0, 0.85);
+
+  display: flex;
+  align-items: center;
+  overflow: visible;
+  padding: 6px;
+}
+
+.hero-avatar {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  overflow: visible;
+  width: var(--hero-avatar-size);
+  height: var(--hero-avatar-size);
+  /* Pull each avatar left over the prior; z-index in JSX stacks left-on-top. */
+  margin-left: calc(-1 * var(--hero-avatar-overlap));
+  border-radius: 9999px;
+  border: var(--hero-avatar-border) solid var(--hero-avatar-ring);
+  background: #0b1a47;
+  box-shadow: var(--hero-avatar-halo);
+}
+
+.hero-avatar:first-child {
+  margin-left: 0;
+}
+
+.hero-avatar__clip {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.hero-avatar__clip img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/** Trust badge row — plain CSS gaps (Tailwind mr-* was not reliably generated). */
+.hero-trust-row {
+  display: flex;
+  align-items: center;
+  height: 3rem;
+}
+
+.hero-trust-row__badge {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-right: 1rem;
+}
+
+.hero-trust-row__seal {
+  flex-shrink: 0;
+  height: 1.75rem;
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+.hero-trust-row__label {
+  flex-shrink: 0;
+  font-size: 11px;
+  line-height: 1.25;
+  color: #fff;
+}
+
+.hero-trust-row__badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

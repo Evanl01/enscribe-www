@@ -9,18 +9,18 @@ export function PricingSection() {
       aria-labelledby="pricing-heading"
     >
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <div className="max-w-2xl">
+        <div className="mx-auto max-w-[850px] text-center">
           <h2
             id="pricing-heading"
             className="text-4xl font-semibold leading-[1] tracking-tight sm:text-6xl"
             style={SERIF}
           >
             Priced to help you
-            <br />
-            <span className="text-[#3166F7]">care</span>
+            
+            <span className="text-[#3166F7]"> care</span>
           </h2>
           <p className="mt-5 text-[#3C4C78]">
-            Join the growing community of over 26,000 providers using
+            Join the growing community of over 14,000 providers using
             EnScribe to revolutionize the way they document patient visits
           </p>
         </div>

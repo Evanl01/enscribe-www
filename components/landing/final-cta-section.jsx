@@ -6,11 +6,11 @@ import { LANDING_TRY_FOR_FREE_HREF, SERIF } from "@/components/landing/constants
 export function FinalCtaSection() {
   return (
     <section className="bg-gradient-to-b from-white to-[#F9FAFF] py-24">
-      <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
-        <h2 className="text-4xl font-semibold tracking-tight sm:text-6xl" style={SERIF}>
-          Free yourself for
+      <div className="mx-auto max-w-5xl px-5 text-center sm:px-8">
+        <h2 className="font-semibold tracking-tight" style={SERIF}>
+          <span className="text-5xl text-[#3166F7] sm:text-6xl">EnScribe.</span>
           <br />
-          <span className="text-[#3166F7]">better things</span>
+          <span className="text-4xl sm:text-5xl">Say Goodbye to After-Hours Charting.</span>
         </h2>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <AppLink

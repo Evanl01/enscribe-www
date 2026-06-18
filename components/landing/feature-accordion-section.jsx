@@ -7,6 +7,7 @@ import {
   FEATURE_ACCORDION_COL_SPLIT,
   HERO_SECTION_OVERLAP_PX,
   HERO_SECTION_TOP_RADIUS_PX,
+  LANDING_WHITE_SECTION_BG,
   SERIF,
 } from "@/components/landing/constants";
 import { FeatureVisual } from "@/components/landing/placeholders";
@@ -20,12 +21,12 @@ export function FeatureAccordionSection() {
 
   return (
     <section
-      className="relative z-20 overflow-hidden border-b border-[#183278]/8 py-20 sm:py-28"
+      className="relative z-20 overflow-hidden py-20 sm:py-28"
       style={{
         marginTop: -HERO_SECTION_OVERLAP_PX,
         borderTopLeftRadius: HERO_SECTION_TOP_RADIUS_PX,
         borderTopRightRadius: HERO_SECTION_TOP_RADIUS_PX,
-        backgroundColor: "#ffffff",
+        backgroundColor: LANDING_WHITE_SECTION_BG,
         boxShadow: "0 -20px 50px -20px rgba(11, 26, 71, 0.35)",
       }}
     >

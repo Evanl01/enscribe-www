@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AppLink } from "@/components/landing/app-link";
+import "@/components/landing/hero-avatars.css";
 import {
   HERO_SECTION_OVERLAP_PX,
   LANDING_FEATURES_ANCHOR_ID,
@@ -24,6 +25,13 @@ const HERO_OVERLAP = HERO_SECTION_OVERLAP_PX;
 /** Clears feature-section overlap + scroll pill. */
 const HERO_BOTTOM_INSET = `calc(${HERO_OVERLAP}px + 5% + 2.5rem)`;
 
+const CLINICIAN_AVATARS = [
+  "/images/small-doc1.png",
+  "/images/small-doc2.png",
+  "/images/small-doc3.png",
+  "/images/small-doc4.png",
+];
+
 function subscribeMd(cb) {
   const mq = window.matchMedia(MD_MEDIA);
   mq.addEventListener("change", cb);
@@ -44,9 +52,13 @@ function scrollToFeaturesAnchor(event) {
   const target = document.getElementById(LANDING_FEATURES_ANCHOR_ID);
   if (!target) return;
 
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
   const top =
-    target.getBoundingClientRect().top + window.scrollY - LANDING_STICKY_HEADER_PX;
+    target.getBoundingClientRect().top +
+    window.scrollY -
+    LANDING_STICKY_HEADER_PX;
 
   window.scrollTo({
     top: Math.max(0, top),
@@ -79,7 +91,8 @@ function HeroCtaButtons() {
 
 function shouldLoadVideo() {
   if (typeof window === "undefined") return false;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+    return false;
   if (navigator.connection?.saveData) return false;
   return true;
 }
@@ -133,7 +146,11 @@ function HeroVideoBackdrop() {
           }`}
           aria-hidden
         >
-          <source src={MOBILE_MP4} media="(max-width: 767px)" type="video/mp4" />
+          <source
+            src={MOBILE_MP4}
+            media="(max-width: 767px)"
+            type="video/mp4"
+          />
           <source src={DESKTOP_WEBM} type="video/webm" />
           <source src={DESKTOP_MP4} type="video/mp4" />
         </video>
@@ -154,23 +171,42 @@ function HeroVideoBackdrop() {
 
 function HeroTrustBadges() {
   return (
-    <div className="flex flex-col gap-5">
-      <p className="text-sm font-medium tracking-wide text-white/90">
-        HIPAA Compliant · SOC 2 Type II
-      </p>
-      <div className="flex items-center gap-4">
-        <div className="flex -space-x-2" aria-hidden>
-          {[0, 1, 2, 3].map((i) => (
+    <div className="flex flex-col items-start gap-0">
+      <div className="hero-trust-row">
+        <span className="hero-trust-row__badge">
+          <img src="/images/BAA.svg" alt="" aria-hidden />
+        </span>
+        <img
+          src="/images/hipaa-seal.svg"
+          alt=""
+          aria-hidden
+          className="hero-trust-row__seal"
+        />
+
+        <p className="hero-trust-row__label">
+          HIPAA
+          <br />
+          Compliant
+        </p>
+      </div>
+      <div className="flex items-center gap-3.5">
+        <div className="hero-avatar-stack" aria-hidden>
+          {CLINICIAN_AVATARS.map((src, index) => (
             <span
-              key={i}
-              className="h-8 w-8 rounded-full border-2 border-[#0B1A47] bg-gradient-to-br from-[#7C9DF9] to-[#3166F7]"
-            />
+              key={src}
+              className="hero-avatar"
+              style={{ zIndex: CLINICIAN_AVATARS.length - index }}
+            >
+              <span className="hero-avatar__clip">
+                <img src={src} alt="" />
+              </span>
+            </span>
           ))}
         </div>
-        <p className="text-sm text-white/85">
-          <span className="text-white/65">Loved by </span>
+        <p className="text-lg text-white/85">
+          <span className="text-white/65">Trusted by </span>
           <span className="font-semibold text-white" style={SERIF}>
-            26k+ Clinicians
+            14k+ Clinicians
           </span>
         </p>
       </div>
@@ -220,7 +256,8 @@ export function VideoHeroSection() {
             className="mt-5 text-lg leading-relaxed text-white/85"
             style={{ maxWidth: "100%" }}
           >
-            EnScribe frees up time in your day so you can focus on what matters most – Your patients.
+            EnScribe frees up time in your day so you can focus on what matters
+            most – Your patients.
           </p>
         </div>
 
@@ -252,8 +289,19 @@ export function VideoHeroSection() {
           className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/80 backdrop-blur transition hover:border-white/40 hover:bg-white/15 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B1A47]"
         >
           Scroll to explore
-          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          <svg
+            viewBox="0 0 24 24"
+            className="h-3.5 w-3.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            aria-hidden
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </a>
       </div>

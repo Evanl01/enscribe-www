@@ -1,5 +1,8 @@
 export const SERIF = { fontFamily: "var(--font-source-serif), Georgia, serif" };
 
+/** Shared surface for post-hero white panels (feature accordion, specialties, etc.). */
+export const LANDING_WHITE_SECTION_BG = "#ffffff";
+
 /** Primary "Try for free" CTAs on the marketing landing page. */
 export const LANDING_TRY_FOR_FREE_HREF = "/signup";
 
@@ -97,7 +100,7 @@ export const PRICING_TIERS = [
   {
     name: "Free",
     price: "$0",
-    blurb: "Flexible AI scribe for limited patient volumes.",
+    blurb: "Get started with AI scribing and note generation at no cost.",
     cta: "Try for free",
     href: "/signup",
     highlight: false,
@@ -105,17 +108,17 @@ export const PRICING_TIERS = [
   {
     name: "Pro",
     price: "$49",
-    blurb: "Full suite of AI tools and integrations.",
-    cta: "Try for free",
+    blurb: "Unlimited AI scribe usage with powerful automation, templates, and EHR integrations.",
+    cta: "Get started",
     href: "/signup",
     highlight: true,
   },
   {
     name: "Enterprise",
-    price: "Custom",
-    blurb: "All-in-one AI platform for your clinic.",
-    cta: "Contact Sales",
-    href: "/signup",
+    price: "Contact us",
+    blurb: "Customized solutions for multi-provider practices.",
+    cta: "Contact us",
+    href: "/contact",
     highlight: false,
   },
 ];
