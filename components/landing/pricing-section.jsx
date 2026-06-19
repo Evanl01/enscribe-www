@@ -27,7 +27,7 @@ export function PricingSection() {
 
         <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-3">
           {PRICING_TIERS.map((t) => {
-            const cadence = t.price === "Custom" ? "" : "/mo";
+            const cadence = t.price.startsWith("$") ? "/mo" : "";
             return (
               <div
                 key={t.name}

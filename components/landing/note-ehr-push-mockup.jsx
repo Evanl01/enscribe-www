@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useMockupPulseAnimation } from "@/components/landing/use-mockup-play-animation";
 import { SERIF } from "@/components/landing/constants";
 import { computeContainedScale, mockupViewports } from "@/components/landing/mockup-scale";
 import "./note-ehr-push-mockup.css";
@@ -24,7 +25,7 @@ export const NOTE_EHR_PUSH_MOCKUP = {
 };
 
 /** Card design canvas (width × height) */
-export const NOTE_EHR_PUSH_CANVAS = { width: 550, height: 460 };
+export const NOTE_EHR_PUSH_CANVAS = { width: 580, height: 500 };
 export const NOTE_EHR_PUSH_MAX_WIDTH = 440;
 
 const { viewport: NOTE_EHR_PUSH_VIEWPORT } = mockupViewports(NOTE_EHR_PUSH_CANVAS);
@@ -53,6 +54,17 @@ const COLORS = {
 };
 
 const AVATAR_SIZE = 34;
+
+const TYPE = {
+  title: 20,
+  meta: 16,
+  badge: 15,
+  avatar: 16,
+  sectionLabel: 18,
+  sectionBody: 18,
+  pushMain: 19,
+  pushEhr: 16,
+};
 
 function ChevronDown({ size = 8, color = COLORS.chevron }) {
   return (
@@ -122,7 +134,7 @@ function PatientAvatar({ initials }) {
         height: AVATAR_SIZE,
         backgroundColor: COLORS.avatarBg,
         color: COLORS.accent,
-        fontSize: 14.5,
+        fontSize: TYPE.avatar,
         letterSpacing: "0.02em",
       }}
       aria-hidden
@@ -136,8 +148,8 @@ const PUSH_BUTTON_RADIUS = 8;
 
 /** Split push button — primary label leads; EHR segment stays secondary. */
 const PUSH_BUTTON = {
-  fontSizeMain: 17.5,
-  fontSizeEhr: 14.5,
+  fontSizeMain: TYPE.pushMain,
+  fontSizeEhr: TYPE.pushEhr,
   padMain: "11px 15px",
   padEhr: "11px 11px",
   gapMain: 6,
@@ -206,7 +218,7 @@ function ExpandedSection({ label, text }) {
       >
         <div className="flex items-center" style={{ gap: 7 }}>
           <ChevronDown />
-          <span className="font-semibold" style={{ fontSize: 15.5, color: COLORS.body }}>
+          <span className="font-semibold" style={{ fontSize: TYPE.sectionLabel, color: COLORS.body }}>
             {label}
           </span>
         </div>
@@ -219,7 +231,7 @@ function ExpandedSection({ label, text }) {
             margin: 0,
             paddingLeft: 10,
             borderLeft: `3px solid ${COLORS.accent}`,
-            fontSize: 14.5,
+            fontSize: TYPE.sectionBody,
             color: COLORS.body,
             lineHeight: 1.45,
           }}
@@ -239,7 +251,7 @@ function CollapsedSection({ label }) {
     >
       <div className="flex items-center" style={{ gap: 7 }}>
         <ChevronRight />
-        <span className="font-semibold" style={{ fontSize: 15.5, color: COLORS.body }}>
+        <span className="font-semibold" style={{ fontSize: TYPE.sectionLabel, color: COLORS.body }}>
           {label}
         </span>
       </div>
@@ -248,7 +260,7 @@ function CollapsedSection({ label }) {
   );
 }
 
-export function NoteEhrPushPanel({ config = NOTE_EHR_PUSH_MOCKUP }) {
+export function NoteEhrPushPanel({ config = NOTE_EHR_PUSH_MOCKUP, playAnimations }) {
   const {
     patient,
     ehr,
@@ -257,16 +269,17 @@ export function NoteEhrPushPanel({ config = NOTE_EHR_PUSH_MOCKUP }) {
     animatePushButton = false,
     pushEmphasisDelayMs = 200,
   } = config;
+  const pulseTrigger = useMockupPulseAnimation({
+    animate: animatePushButton,
+    playAnimations,
+    delayMs: pushEmphasisDelayMs,
+  });
   const [pulseActive, setPulseActive] = useState(false);
 
   useEffect(() => {
-    if (!animatePushButton) return;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) return;
-
-    const id = window.setTimeout(() => setPulseActive(true), pushEmphasisDelayMs);
-    return () => window.clearTimeout(id);
-  }, [animatePushButton, pushEmphasisDelayMs]);
+    if (pulseTrigger) setPulseActive(true);
+    else setPulseActive(false);
+  }, [pulseTrigger]);
 
   return (
     <div
@@ -303,7 +316,7 @@ export function NoteEhrPushPanel({ config = NOTE_EHR_PUSH_MOCKUP }) {
           <PatientAvatar initials={patient.initials} />
           <p
             className="min-w-0 truncate font-semibold leading-tight"
-            style={{ ...SERIF, fontSize: 18, color: COLORS.body, margin: 0 }}
+            style={{ ...SERIF, fontSize: TYPE.title, color: COLORS.body, margin: 0 }}
           >
             {patient.name}
           </p>
@@ -312,12 +325,12 @@ export function NoteEhrPushPanel({ config = NOTE_EHR_PUSH_MOCKUP }) {
           className="flex min-w-0 flex-wrap items-center"
           style={{ gridColumn: 1, gridRow: 2, gap: 6 }}
         >
-          <span style={{ fontSize: 14, color: COLORS.muted }}>{patient.timestamp}</span>
+          <span style={{ fontSize: TYPE.meta, color: COLORS.muted }}>{patient.timestamp}</span>
           <span
             className="rounded font-semibold uppercase tracking-wide"
             style={{
               padding: "2px 6px",
-              fontSize: 13,
+              fontSize: TYPE.badge,
               color: COLORS.accent,
               backgroundColor: COLORS.badgeBg,
               letterSpacing: "0.04em",
@@ -349,12 +362,23 @@ export function NoteEhrPushPanel({ config = NOTE_EHR_PUSH_MOCKUP }) {
 }
 
 /** Completed note with EHR push — scales to fit its container for the accordion visual. */
-export function NoteEhrPushFeatureMockup({ className = "", config = NOTE_EHR_PUSH_MOCKUP, fit }) {
+export function NoteEhrPushFeatureMockup({
+  className = "",
+  config = NOTE_EHR_PUSH_MOCKUP,
+  fit,
+  displaySize,
+  playAnimations,
+}) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(1);
-  const contain = fit === "contain";
+  const contain = fit === "contain" && !displaySize?.width;
 
   useLayoutEffect(() => {
+    if (displaySize?.width) {
+      setScale(computeContainedScale(displaySize, NOTE_EHR_PUSH_VIEWPORT));
+      return;
+    }
+
     const el = containerRef.current;
     if (!el) return;
 
@@ -371,7 +395,7 @@ export function NoteEhrPushFeatureMockup({ className = "", config = NOTE_EHR_PUS
     const ro = new ResizeObserver(updateScale);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [contain]);
+  }, [contain, displaySize]);
 
   const scaledWidth = Math.ceil(NOTE_EHR_PUSH_VIEWPORT.width * scale);
   const scaledHeight = Math.ceil(NOTE_EHR_PUSH_VIEWPORT.height * scale);
@@ -379,7 +403,7 @@ export function NoteEhrPushFeatureMockup({ className = "", config = NOTE_EHR_PUS
   return (
     <div
       ref={containerRef}
-      className={`m-0 p-0 ${contain ? "flex h-full w-full items-center justify-end" : "relative w-full"} ${className}`.trim()}
+      className={`m-0 p-0 ${contain ? "flex h-full w-full items-center justify-start" : "relative w-full"} ${className}`.trim()}
       style={
         contain
           ? undefined
@@ -399,7 +423,7 @@ export function NoteEhrPushFeatureMockup({ className = "", config = NOTE_EHR_PUS
             transformOrigin: "top left",
           }}
         >
-          <NoteEhrPushPanel config={config} />
+          <NoteEhrPushPanel config={config} playAnimations={playAnimations} />
         </div>
       </div>
     </div>

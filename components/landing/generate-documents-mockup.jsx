@@ -37,7 +37,7 @@ export const GENERATE_DOCUMENTS_MOCKUP = {
 };
 
 /** Card design canvas (width × height) */
-export const DOCS_CANVAS = { width: 550, height: 505 };
+export const DOCS_CANVAS = { width: 550, height: 565 };
 
 /** Composite layout tweak — position within coding-letters overlay. */
 export const DOCS_LAYOUT = { top: 0, left: 0, paddingBottom: 24 };
@@ -74,9 +74,9 @@ const STATUS = {
 };
 
 const TYPE = {
-  title: 16,
-  section: 14,
-  body: 14,
+  title: 17,
+  section: 15,
+  body: 15,
   label: 12,
   chip: 12,
 };

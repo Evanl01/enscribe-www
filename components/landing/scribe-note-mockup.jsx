@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { useMockupTypingAnimation } from "@/components/landing/use-mockup-play-animation";
 
 /** Tweak note copy and styling without touching layout code. */
 export const SCRIBE_NOTE_MOCKUP = {
@@ -144,32 +145,21 @@ export function ScribeNotePanel({ config = SCRIBE_NOTE_MOCKUP, typedChars = null
 }
 
 /** SOAP note card — scales to fit its container when used standalone. */
-export function ScribeNoteMockup({ className = "", config = SCRIBE_NOTE_MOCKUP }) {
-  const [typedChars, setTypedChars] = useState(() =>
-    config.animateTyping ? 0 : config.typingSection?.text.length ?? 0,
-  );
-
-  useEffect(() => {
-    if (!config.animateTyping || !config.typingSection) return;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) {
-      setTypedChars(config.typingSection.text.length);
-      return;
-    }
-
-    const fullLen = config.typingSection.text.length;
-    let count = 0;
-    const id = window.setInterval(() => {
-      count += 1;
-      setTypedChars(count);
-      if (count >= fullLen) window.clearInterval(id);
-    }, config.typingIntervalMs);
-    return () => window.clearInterval(id);
-  }, [config]);
+export function ScribeNoteMockup({ className = "", config = SCRIBE_NOTE_MOCKUP, playAnimations }) {
+  const fullLen = config.typingSection?.text.length ?? 0;
+  const typedChars = useMockupTypingAnimation({
+    animateTyping: config.animateTyping && Boolean(config.typingSection),
+    playAnimations,
+    fullLength: fullLen,
+    intervalMs: config.typingIntervalMs,
+  });
 
   return (
     <div className={className}>
-      <ScribeNotePanel config={config} typedChars={config.animateTyping ? typedChars : null} />
+      <ScribeNotePanel
+        config={config}
+        typedChars={config.animateTyping && config.typingSection ? typedChars : null}
+      />
     </div>
   );
 }

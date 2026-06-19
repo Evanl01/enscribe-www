@@ -44,12 +44,17 @@ export const CODING_LETTERS_CANVAS = {
 export const CODING_LETTERS_MAX_WIDTH = BILLING_CANVAS.width + 40;
 
 /** Billing + generate-documents overlay for the Coding & letters accordion visual. */
-export function CodingLettersFeatureMockup({ className = "", fit }) {
+export function CodingLettersFeatureMockup({ className = "", fit, displaySize, playAnimations }) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(1);
-  const contain = fit === "contain";
+  const contain = fit === "contain" && !displaySize?.width;
 
   useLayoutEffect(() => {
+    if (displaySize?.width) {
+      setScale(computeContainedScale(displaySize, FEATURE_LAYOUT_FOOTPRINT));
+      return;
+    }
+
     const el = containerRef.current;
     if (!el) return;
 
@@ -66,7 +71,7 @@ export function CodingLettersFeatureMockup({ className = "", fit }) {
     const ro = new ResizeObserver(updateScale);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [contain]);
+  }, [contain, displaySize]);
 
   const scaledWidth = Math.ceil(FEATURE_LAYOUT_FOOTPRINT.width * scale);
   const scaledHeight = Math.ceil(FEATURE_LAYOUT_FOOTPRINT.height * scale);
@@ -113,7 +118,7 @@ export function CodingLettersFeatureMockup({ className = "", fit }) {
               zIndex: 2,
             }}
           >
-            <BillingSuggestionsMockup />
+            <BillingSuggestionsMockup playAnimations={playAnimations} />
           </div>
         </div>
       </div>
@@ -123,7 +128,7 @@ export function CodingLettersFeatureMockup({ className = "", fit }) {
   return (
     <div
       ref={containerRef}
-      className={`m-0 h-full w-full p-0 ${contain ? "flex items-start justify-end" : "relative"} ${className}`.trim()}
+      className={`m-0 h-full w-full p-0 ${contain ? "flex items-start justify-start" : "relative"} ${className}`.trim()}
       style={
         contain
           ? undefined

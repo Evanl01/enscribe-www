@@ -45,13 +45,60 @@ export const FEATURE_ACCORDION_PANEL_HEIGHT_PX = 460;
 /** Desktop accordion grid column split — left % / right % */
 export const FEATURE_ACCORDION_COL_SPLIT = [42, 58];
 
+/**
+ * Desktop scroll path copy / visual split — responsive in feature-scroll-path.css:
+ * 35/65 at 1024px, linear to 44/56 by 1200px, fixed 44/56 above.
+ */
+export const FEATURE_SCROLL_PATH_COL_SPLIT = [44, 56];
+
+/**
+ * Scroll-path mockup render target per mockupKey (< lg / lg), in px.
+ * width/height define the box the mockup scales to fit (aspect ratio preserved).
+ * Outer slot = these dimensions + FEATURE_SCROLL_PATH_VISUAL_PAD.
+ */
+export const FEATURE_SCROLL_PATH_MOCKUP_SIZES = {
+  ambientScribe: { width: 450, height: 400, widthLg: 520, heightLg: 500 },
+  noteEhrPush: { width: 500, height: 400, widthLg: 465, heightLg: 420 },
+  visitPrep: { width: 500, height: 400, widthLg: 500, heightLg: 440 },
+  billingSuggestions: { width: 500, height: 400, widthLg: 520, heightLg: 500 },
+};
+
+export function getFeatureScrollPathMockupSize(mockupKey) {
+  return (
+    FEATURE_SCROLL_PATH_MOCKUP_SIZES[mockupKey] ??
+    FEATURE_SCROLL_PATH_MOCKUP_SIZES.noteEhrPush
+  );
+}
+
+/** Room for mockup drop shadows in the visual column (px). */
+export const FEATURE_SCROLL_PATH_VISUAL_PAD = {
+  top: 20,
+  right: 20,
+  bottom: 20,
+  left: 12,
+};
+
+/** Outer slot = mockup render target box + pad. */
+export function getFeatureScrollPathSlotSize(sizeMap, lg) {
+  const mockupWidth = lg ? (sizeMap.widthLg ?? sizeMap.width) : sizeMap.width;
+  const mockupHeight = lg ? (sizeMap.heightLg ?? sizeMap.height) : sizeMap.height;
+  const pad = FEATURE_SCROLL_PATH_VISUAL_PAD;
+
+  return {
+    mockupWidth,
+    mockupHeight,
+    slotWidth: mockupWidth + pad.left + pad.right,
+    slotHeight: mockupHeight + pad.top + pad.bottom,
+  };
+}
+
 export const FEATURES = [
   {
     key: "ai-scribe",
     title: "AI scribe",
     blurb:
-      "Turn patient conversations into clear, accurate notes — so you can focus on delivering excellent care.",
-    label: "Active encounter capture",
+      "Transcribe patient visits into concise, accurate notes — so you can focus on delivering excellent care",
+    label: "AI-powered transcription",
     spec: "Screenshot/loop: live waveform, partial SOAP note populating as the visit progresses.",
     media: "mockup",
     mockupKey: "ambientScribe",
@@ -62,7 +109,7 @@ export const FEATURES = [
     key: "ehr",
     title: "EHR integration",
     blurb:
-      "Transfer notes to the EHR you already use with just one click — saving you time and frustration throughout the day.",
+      "Propogate notes to your EHR with one click — it's simple and efficient.",
     label: "One-click push to EHR",
     spec: "Screenshot: completed note with “Send to EHR” button, connector chips (Epic, Athena, Elation placeholders).",
     media: "mockup",
@@ -74,7 +121,7 @@ export const FEATURES = [
     key: "prep",
     title: "Visit prep",
     blurb:
-      "Get clear patient summaries before the visit and quick clinical answers when questions come up.",
+      "Get detailed patient summaries before each visit and instant answers to clinical questions when you need them.",
     label: "Pre-visit summary",
     spec: "Screenshot: patient card with history, problem list, last-visit recap, clinical Q&A panel.",
     media: "mockup",
@@ -86,7 +133,7 @@ export const FEATURES = [
     key: "coding",
     title: "Coding & letters",
     blurb:
-      "Reduce after-hours work by generating ICD-10 and CPT codes, patient instructions, referral letters, and more.",
+      "Eliminate after-hours work by generating ICD-10 and CPT codes, patient instructions, referral letters, and more.",
     label: "ICD-10 / CPT + letters",
     spec: "Screenshot: suggested codes panel + drafted patient instructions / referral letter.",
     media: "mockup",
@@ -115,7 +162,7 @@ export const PRICING_TIERS = [
   },
   {
     name: "Enterprise",
-    price: "Contact us",
+    price: "Custom",
     blurb: "Customized solutions for multi-provider practices.",
     cta: "Contact us",
     href: "/contact",

@@ -218,12 +218,17 @@ const FEATURE_LAYOUT_FOOTPRINT = {
 const { viewport: AMBIENT_VIEWPORT } = mockupViewports(AMBIENT_CANVAS);
 
 /** Ambient scribe + SOAP note overlay for the AI scribe accordion visual. */
-export function AiScribeFeatureMockup({ className = "", fit }) {
+export function AiScribeFeatureMockup({ className = "", fit, displaySize, playAnimations }) {
   const containerRef = useRef(null);
   const [scale, setScale] = useState(1);
-  const contain = fit === "contain";
+  const contain = fit === "contain" && !displaySize?.width;
 
   useLayoutEffect(() => {
+    if (displaySize?.width) {
+      setScale(computeContainedScale(displaySize, FEATURE_LAYOUT_FOOTPRINT));
+      return;
+    }
+
     const el = containerRef.current;
     if (!el) return;
 
@@ -240,7 +245,7 @@ export function AiScribeFeatureMockup({ className = "", fit }) {
     const ro = new ResizeObserver(updateScale);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [contain]);
+  }, [contain, displaySize]);
 
   const scaledWidth = FEATURE_LAYOUT_FOOTPRINT.width * scale;
   const scaledHeight = FEATURE_LAYOUT_FOOTPRINT.height * scale;
@@ -286,7 +291,7 @@ export function AiScribeFeatureMockup({ className = "", fit }) {
               zIndex: 2,
             }}
           >
-            <ScribeNoteMockup />
+            <ScribeNoteMockup playAnimations={playAnimations} />
           </div>
         </div>
       </div>
@@ -296,7 +301,7 @@ export function AiScribeFeatureMockup({ className = "", fit }) {
   return (
     <div
       ref={containerRef}
-      className={`m-0 h-full w-full p-0 ${contain ? "flex items-center justify-end" : "relative"} ${className}`.trim()}
+      className={`m-0 h-full w-full p-0 ${contain ? "flex items-center justify-start" : "relative"} ${className}`.trim()}
     >
       {contain ? (
         viewport

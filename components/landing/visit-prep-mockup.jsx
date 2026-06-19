@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { useMockupTypingAnimation } from "@/components/landing/use-mockup-play-animation";
 import { SERIF } from "@/components/landing/constants";
 import { computeContainedScale, mockupViewports } from "@/components/landing/mockup-scale";
 
@@ -24,15 +25,16 @@ export const VISIT_PREP_MOCKUP = {
   typingIntervalMs: 35,
 };
 
-/** Card design canvas width — height is content-driven */
-export const PREP_CANVAS = { width: 450 };
-export const PREP_MAX_WIDTH = 420;
+/** Card design canvas (width × height) */
+export const PREP_CANVAS = { width: 480, height: 440 };
+
+const { viewport: PREP_VIEWPORT } = mockupViewports(PREP_CANVAS);
 
 const SPACE = {
   header: "12px 14px 11px",
   body: "14px 14px 12px",
-  chatGap: 14,
-  chipGap: 7,
+  chatGap: 24,
+  chipGap: 9,
   chipPad: "6px 11px",
 };
 
@@ -49,10 +51,10 @@ const COLORS = {
 };
 
 const TYPE = {
-  title: 15,
-  chat: 14.5,
-  chip: 13.5,
-  input: 12.5,
+  title: 18,
+  chat: 17,
+  chip: 15,
+  input: 14,
 };
 
 const ASSISTANT_CHAT = {
@@ -239,6 +241,7 @@ export function VisitPrepPanel({ config = VISIT_PREP_MOCKUP, typedChars = null }
     <div
       style={{
         width: PREP_CANVAS.width,
+        height: PREP_CANVAS.height,
         backgroundColor: "#ffffff",
         borderRadius: 14,
         border: `1px solid ${COLORS.border}`,
@@ -303,7 +306,7 @@ export function VisitPrepPanel({ config = VISIT_PREP_MOCKUP, typedChars = null }
           </div>
         </div>
 
-        <div className="flex flex-wrap" style={{ gap: SPACE.chipGap, marginTop: 60 }}>
+        <div className="flex flex-wrap" style={{ gap: SPACE.chipGap, marginTop: 100 }}>
           {suggestions.map((label) => (
             <span
               key={label}
@@ -352,79 +355,62 @@ export function VisitPrepPanel({ config = VISIT_PREP_MOCKUP, typedChars = null }
 }
 
 /** Visit prep chat card — scales to fit its container for the accordion visual. */
-export function VisitPrepFeatureMockup({ className = "", fit, config = VISIT_PREP_MOCKUP }) {
+export function VisitPrepFeatureMockup({
+  className = "",
+  fit,
+  config = VISIT_PREP_MOCKUP,
+  displaySize,
+  playAnimations,
+}) {
   const containerRef = useRef(null);
-  const panelRef = useRef(null);
   const [scale, setScale] = useState(1);
-  const [footprintHeight, setFootprintHeight] = useState(0);
   const fullResponseLength = getAssistantResponseText(
     config.assistantIntro,
     config.assistantBullets,
   ).length;
-  const [typedChars, setTypedChars] = useState(() =>
-    config.animateTyping ? 0 : fullResponseLength,
-  );
-  const contain = fit === "contain";
+  const typedChars = useMockupTypingAnimation({
+    animateTyping: config.animateTyping,
+    playAnimations,
+    fullLength: fullResponseLength,
+    intervalMs: config.typingIntervalMs,
+  });
+  const contain = fit === "contain" && !displaySize?.width;
 
-  useEffect(() => {
-    if (!config.animateTyping) return;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) {
-      setTypedChars(fullResponseLength);
+  useLayoutEffect(() => {
+    if (displaySize?.width) {
+      setScale(computeContainedScale(displaySize, PREP_VIEWPORT));
       return;
     }
 
-    let count = 0;
-    const id = window.setInterval(() => {
-      count += 1;
-      setTypedChars(count);
-      if (count >= fullResponseLength) window.clearInterval(id);
-    }, config.typingIntervalMs);
-    return () => window.clearInterval(id);
-  }, [config, fullResponseLength]);
-
-  useLayoutEffect(() => {
-    const container = containerRef.current;
-    const panel = panelRef.current;
-    if (!container || !panel) return;
+    const el = containerRef.current;
+    if (!el) return;
 
     const updateScale = () => {
-      const rect = container.getBoundingClientRect();
-      const panelHeight = panel.offsetHeight;
-      const { viewport } = mockupViewports({
-        width: PREP_CANVAS.width,
-        height: panelHeight,
-      });
-      const nextScale = contain
-        ? computeContainedScale(rect, viewport)
-        : Math.min(rect.width, PREP_MAX_WIDTH) / viewport.width;
-
-      setFootprintHeight(panelHeight);
-      setScale(nextScale);
+      const rect = el.getBoundingClientRect();
+      setScale(
+        contain
+          ? computeContainedScale(rect, PREP_VIEWPORT)
+          : rect.width / PREP_VIEWPORT.width,
+      );
     };
 
     updateScale();
     const ro = new ResizeObserver(updateScale);
-    ro.observe(container);
-    ro.observe(panel);
+    ro.observe(el);
     return () => ro.disconnect();
-  }, [contain]);
+  }, [contain, displaySize]);
 
-  const viewports =
-    footprintHeight > 0
-      ? mockupViewports({ width: PREP_CANVAS.width, height: footprintHeight })
-      : null;
-  const scaledWidth = viewports ? Math.ceil(viewports.viewport.width * scale) : undefined;
-  const scaledHeight = viewports ? Math.ceil(viewports.viewport.height * scale) : undefined;
+  const scaledWidth = Math.ceil(PREP_VIEWPORT.width * scale);
+  const scaledHeight = Math.ceil(PREP_VIEWPORT.height * scale);
 
   return (
     <div
       ref={containerRef}
-      className={`m-0 p-0 ${contain ? "flex h-full w-full items-center justify-end" : "relative w-full"} ${className}`.trim()}
+      className={`m-0 p-0 ${contain ? "flex h-full w-full items-center justify-start" : "relative w-full"} ${className}`.trim()}
       style={
         contain
           ? undefined
-          : { maxWidth: PREP_MAX_WIDTH, width: scaledWidth, height: scaledHeight }
+          : { width: scaledWidth, height: scaledHeight }
       }
     >
       <div
@@ -435,17 +421,15 @@ export function VisitPrepFeatureMockup({ className = "", fit, config = VISIT_PRE
           className="absolute left-0 top-0 m-0 p-0"
           style={{
             width: PREP_CANVAS.width,
-            height: footprintHeight || undefined,
-            transform: footprintHeight > 0 ? `scale(${scale})` : undefined,
+            height: PREP_CANVAS.height,
+            transform: `scale(${scale})`,
             transformOrigin: "top left",
           }}
         >
-          <div ref={panelRef}>
-            <VisitPrepPanel
-              config={config}
-              typedChars={config.animateTyping ? typedChars : null}
-            />
-          </div>
+          <VisitPrepPanel
+            config={config}
+            typedChars={config.animateTyping ? typedChars : null}
+          />
         </div>
       </div>
     </div>

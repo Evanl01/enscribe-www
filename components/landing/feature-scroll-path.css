@@ -1,0 +1,266 @@
+.feature-scroll-path-track {
+  --scroll-step-gap: 4rem;
+  --scroll-path-rail-x: 1.625rem;
+  position: relative;
+  overflow: visible;
+}
+
+/* Continuous muted rail — segments overlay this so gaps never look broken. */
+.feature-scroll-path-track::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--scroll-path-rail-x);
+  width: 2px;
+  transform: translateX(-50%);
+  background-color: rgba(24, 50, 120, 0.12);
+  pointer-events: none;
+}
+
+@media (min-width: 640px) {
+  .feature-scroll-path-track {
+    --scroll-path-rail-x: 2rem;
+  }
+}
+
+/* Each article is a self-contained row — visuals stay in flow, no bleed into neighbors. */
+.feature-scroll-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  gap: 1rem;
+  scroll-margin-top: 5.5rem;
+  overflow: visible;
+  transition: opacity 0.35s ease;
+}
+
+.feature-scroll-step:not(:last-child) {
+  margin-bottom: var(--scroll-step-gap);
+}
+
+@media (min-width: 640px) {
+  .feature-scroll-step {
+    grid-template-columns: 4rem minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+.feature-scroll-step.is-muted {
+  opacity: 0.52;
+}
+
+.feature-scroll-step.is-active {
+  opacity: 1;
+}
+
+.feature-scroll-node-col {
+  position: relative;
+  align-self: stretch;
+  overflow: visible;
+}
+
+.feature-scroll-line-segment {
+  position: absolute;
+  left: 50%;
+  z-index: 1;
+  width: 2px;
+  transform: translateX(-50%);
+  background-color: rgba(24, 50, 120, 0.12);
+  transition: background-color 0.35s ease;
+}
+
+.feature-scroll-line-segment.is-filled {
+  background-color: #3166f7;
+}
+
+.feature-scroll-line-above {
+  top: 0;
+  height: 0;
+}
+
+.feature-scroll-line-below {
+  top: 2.5rem;
+  bottom: 0;
+}
+
+.feature-scroll-step:not(:last-child) .feature-scroll-line-below {
+  bottom: calc(-1 * var(--scroll-step-gap));
+}
+
+.feature-scroll-node {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(24, 50, 120, 0.2);
+  background-color: #ffffff;
+  color: #3c4c78;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateX(-50%);
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.feature-scroll-node:hover {
+  border-color: rgba(49, 102, 247, 0.45);
+}
+
+.feature-scroll-node:focus-visible {
+  outline: 2px solid #3166f7;
+  outline-offset: 3px;
+}
+
+.feature-scroll-node.is-past,
+.feature-scroll-node.is-active {
+  border-color: #3166f7;
+  background-color: #3166f7;
+  color: #ffffff;
+}
+
+.feature-scroll-node.is-active {
+  box-shadow: 0 0 0 4px rgba(49, 102, 247, 0.18);
+}
+
+.feature-scroll-step-body {
+  min-width: 0;
+  overflow: visible;
+}
+
+.feature-scroll-step-copy {
+  min-width: 0;
+}
+
+.feature-scroll-step-visual-col {
+  min-width: 0;
+}
+
+.feature-scroll-step-visual {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  overflow: visible;
+  padding: 1rem 1.25rem;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .feature-scroll-path-track {
+    margin-right: -1rem;
+    /* Copy 35% / visual 65% at 1024px, easing to 44% / 56% by 1200px. */
+    --scroll-copy-col: clamp(
+      35%,
+      calc(35% + (100vw - 1024px) * 9 / 176),
+      44%
+    );
+    --scroll-visual-col: clamp(
+      56%,
+      calc(65% - (100vw - 1024px) * 9 / 176),
+      65%
+    );
+  }
+
+  .feature-scroll-step-inner {
+    display: grid;
+    grid-template-columns: minmax(0, var(--scroll-copy-col, 34%)) minmax(
+        0,
+        var(--scroll-visual-col, 66%)
+      );
+    gap: 2rem;
+    align-items: center;
+    min-height: var(--scroll-visual-h-lg, 352px);
+    overflow: visible;
+  }
+
+  /* Copy block (title + blurb) y-center aligns with visual y-center. */
+  .feature-scroll-step-copy {
+    align-self: center;
+  }
+
+  .feature-scroll-step-visual-col {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    align-self: center;
+    width: var(--scroll-visual-w-lg, 420px);
+    height: var(--scroll-visual-h-lg, 352px);
+    min-width: var(--scroll-visual-w-lg, 420px);
+    min-height: var(--scroll-visual-h-lg, 352px);
+    max-height: var(--scroll-visual-h-lg, 352px);
+  }
+
+  .feature-scroll-step-visual {
+    justify-content: flex-start;
+    box-sizing: border-box;
+    width: var(--scroll-visual-w-lg, 420px);
+    height: var(--scroll-visual-h-lg, 352px);
+    min-height: 0;
+    padding: var(--scroll-visual-pad-t, 20px) var(--scroll-visual-pad-r, 20px)
+      var(--scroll-visual-pad-b, 20px) var(--scroll-visual-pad-l, 12px);
+  }
+
+  /* Node sits on the shared row centerline (copy center = visual center). */
+  .feature-scroll-step:first-child .feature-scroll-line-above {
+    top: 0;
+    height: calc(50% - 1.25rem);
+  }
+
+  /* Bridge the step gap — connects to the previous step's extended line-below. */
+  .feature-scroll-step:not(:first-child) .feature-scroll-line-above {
+    top: calc(-1 * var(--scroll-step-gap));
+    height: calc(50% - 1.25rem + var(--scroll-step-gap));
+  }
+
+  .feature-scroll-line-below {
+    top: calc(50% + 1.25rem);
+  }
+
+  .feature-scroll-node {
+    top: calc(50% - 1.25rem);
+  }
+}
+
+@media (min-width: 1200px) {
+  .feature-scroll-path-track {
+    --scroll-copy-col: 44%;
+    --scroll-visual-col: 56%;
+  }
+}
+
+@media (max-width: 1023px) {
+  .feature-scroll-step:not(:first-child) .feature-scroll-line-above {
+    top: calc(-1 * var(--scroll-step-gap));
+    height: var(--scroll-step-gap);
+  }
+
+  .feature-scroll-step-visual {
+    margin-top: 1.5rem;
+    box-sizing: border-box;
+    width: min(100%, var(--scroll-visual-w, 340px));
+    height: var(--scroll-visual-h, 288px);
+    min-height: var(--scroll-visual-h, 288px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-scroll-step,
+  .feature-scroll-line-segment,
+  .feature-scroll-node {
+    transition: none;
+  }
+}

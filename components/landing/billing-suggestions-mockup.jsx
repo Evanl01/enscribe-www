@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { useMockupTypingAnimation } from "@/components/landing/use-mockup-play-animation";
 
 /** Tweak billing copy and styling without touching layout code. */
 export const BILLING_SUGGESTIONS_MOCKUP = {
@@ -25,10 +26,10 @@ export const BILLING_SUGGESTIONS_MOCKUP = {
 };
 
 /** Card design canvas (width × height) */
-export const BILLING_CANVAS = { width: 430, height: 455 };
+export const BILLING_CANVAS = { width: 430, height: 485 };
 
 /** Composite layout tweak — positive offsetX shifts right; offsetY shifts downward. */
-export const BILLING_LAYOUT = { offsetX: 100, offsetY: 70 };
+export const BILLING_LAYOUT = { offsetX: 100, offsetY: 140 };
 
 const SPACE = {
   headerY: "16px 18px 14px",
@@ -62,10 +63,10 @@ const COLORS = {
 };
 
 const TYPE = {
-  title: 16,
-  section: 14,
-  body: 14,
-  supporting: 12,
+  title: 17,
+  section: 15,
+  body: 15,
+  supporting: 13,
 };
 
 function ChevronDown({ size = 9, color = COLORS.chevron }) {
@@ -270,28 +271,18 @@ export function BillingSuggestionsPanel({
 }
 
 /** Billing suggestions card — typing animation on CPT description when used standalone. */
-export function BillingSuggestionsMockup({ className = "", config = BILLING_SUGGESTIONS_MOCKUP }) {
-  const [typedChars, setTypedChars] = useState(() =>
-    config.animateTyping ? 0 : config.cpt.description.length,
-  );
-
-  useEffect(() => {
-    if (!config.animateTyping) return;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) {
-      setTypedChars(config.cpt.description.length);
-      return;
-    }
-
-    const fullLen = config.cpt.description.length;
-    let count = 0;
-    const id = window.setInterval(() => {
-      count += 1;
-      setTypedChars(count);
-      if (count >= fullLen) window.clearInterval(id);
-    }, config.typingIntervalMs);
-    return () => window.clearInterval(id);
-  }, [config]);
+export function BillingSuggestionsMockup({
+  className = "",
+  config = BILLING_SUGGESTIONS_MOCKUP,
+  playAnimations,
+}) {
+  const fullLen = config.cpt.description.length;
+  const typedChars = useMockupTypingAnimation({
+    animateTyping: config.animateTyping,
+    playAnimations,
+    fullLength: fullLen,
+    intervalMs: config.typingIntervalMs,
+  });
 
   return (
     <div className={className}>

@@ -55,12 +55,12 @@ export function FeatureMockupNatural({ alt, className = "", children }) {
 }
 
 /**
- * Fixed-height accordion figure slot — mockups center vertically, align right.
+ * Fixed-height accordion figure slot — mockups center vertically, align left.
  */
 export function FeatureAccordionVisualFrame({ alt, className = "", children }) {
   return (
     <figure
-      className={`relative m-0 flex h-full w-full items-start justify-end overflow-visible p-0 ${className}`}
+      className={`relative m-0 flex h-full w-full items-start justify-start overflow-visible p-0 ${className}`}
       aria-label={alt}
     >
       {children}
@@ -69,7 +69,7 @@ export function FeatureAccordionVisualFrame({ alt, className = "", children }) {
 }
 
 function wrapNaturalMockup(alt, className, layout, node) {
-  if (layout === "accordion") {
+  if (layout === "accordion" || layout === "scrollPath") {
     return (
       <FeatureAccordionVisualFrame alt={alt} className={className}>
         {node}
@@ -83,16 +83,28 @@ function wrapNaturalMockup(alt, className, layout, node) {
   );
 }
 
-export function FeatureVisual({ feature, aspect, className = "", layout = "inline" }) {
+function containedMockupLayout(layout) {
+  return layout === "accordion" || layout === "scrollPath";
+}
+
+export function FeatureVisual({
+  feature,
+  aspect,
+  className = "",
+  layout = "inline",
+  displaySize,
+  playAnimations,
+}) {
   const alt = feature.imageAlt ?? feature.title;
+  const contain = containedMockupLayout(layout);
 
   if (feature.media === "mockup" && feature.mockupKey === "ambientScribe") {
-    if (layout === "accordion") {
+    if (contain) {
       return wrapNaturalMockup(
         alt,
         className,
         layout,
-        <AiScribeFeatureMockup key={feature.key} fit="contain" />,
+        <AiScribeFeatureMockup key={feature.key} fit="contain" displaySize={displaySize} playAnimations={playAnimations} />,
       );
     }
     return (
@@ -114,7 +126,9 @@ export function FeatureVisual({ feature, aspect, className = "", layout = "inlin
       layout,
       <CodingLettersFeatureMockup
         key={feature.key}
-        fit={layout === "accordion" ? "contain" : undefined}
+        fit={contain ? "contain" : undefined}
+        displaySize={displaySize}
+        playAnimations={playAnimations}
       />,
     );
   }
@@ -126,7 +140,9 @@ export function FeatureVisual({ feature, aspect, className = "", layout = "inlin
       layout,
       <VisitPrepFeatureMockup
         key={feature.key}
-        fit={layout === "accordion" ? "contain" : undefined}
+        fit={contain ? "contain" : undefined}
+        displaySize={displaySize}
+        playAnimations={playAnimations}
       />,
     );
   }
@@ -138,7 +154,9 @@ export function FeatureVisual({ feature, aspect, className = "", layout = "inlin
       layout,
       <NoteEhrPushFeatureMockup
         key={feature.key}
-        fit={layout === "accordion" ? "contain" : undefined}
+        fit={contain ? "contain" : undefined}
+        displaySize={displaySize}
+        playAnimations={playAnimations}
       />,
     );
   }
