@@ -5,6 +5,7 @@ import { AppLink } from "@/components/landing/app-link";
 import "@/components/landing/hero-avatars.css";
 import {
   HERO_SECTION_OVERLAP_PX,
+  LANDING_BOOK_DEMO_MAILTO,
   LANDING_FEATURES_ANCHOR_ID,
   LANDING_STICKY_HEADER_PX,
   LANDING_TRY_FOR_FREE_HREF,
@@ -78,13 +79,13 @@ function HeroCtaButtons() {
       >
         Try for free
       </AppLink>
-      <AppLink
-        href="/login"
+      <a
+        href={LANDING_BOOK_DEMO_MAILTO}
         className={`${CTA_CLASS} border border-white/30 bg-white/10 text-white backdrop-blur transition hover:border-white/55 hover:bg-white/15`}
         style={{ width: "12.5rem" }}
       >
         Book a demo
-      </AppLink>
+      </a>
     </>
   );
 }

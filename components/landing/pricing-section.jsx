@@ -59,16 +59,29 @@ export function PricingSection() {
                 <p className="mt-3 text-sm leading-relaxed text-[#3C4C78]">
                   {t.blurb}
                 </p>
-                <AppLink
-                  href={t.href}
-                  className={`mt-6 inline-flex justify-center rounded-xl px-4 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 ${
-                    t.highlight
-                      ? "bg-[#3166F7] text-white hover:bg-[#2751C4]"
-                      : "border border-[#183278]/15 bg-white text-[#183278] hover:border-[#183278]/35"
-                  }`}
-                >
-                  {t.cta}
-                </AppLink>
+                {t.href.startsWith("mailto:") ? (
+                  <a
+                    href={t.href}
+                    className={`mt-6 inline-flex justify-center rounded-xl px-4 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 ${
+                      t.highlight
+                        ? "bg-[#3166F7] text-white hover:bg-[#2751C4]"
+                        : "border border-[#183278]/15 bg-white text-[#183278] hover:border-[#183278]/35"
+                    }`}
+                  >
+                    {t.cta}
+                  </a>
+                ) : (
+                  <AppLink
+                    href={t.href}
+                    className={`mt-6 inline-flex justify-center rounded-xl px-4 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 ${
+                      t.highlight
+                        ? "bg-[#3166F7] text-white hover:bg-[#2751C4]"
+                        : "border border-[#183278]/15 bg-white text-[#183278] hover:border-[#183278]/35"
+                    }`}
+                  >
+                    {t.cta}
+                  </AppLink>
+                )}
               </div>
             );
           })}

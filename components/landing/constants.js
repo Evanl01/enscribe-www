@@ -6,6 +6,17 @@ export const LANDING_WHITE_SECTION_BG = "#ffffff";
 /** Primary "Try for free" CTAs on the marketing landing page. */
 export const LANDING_TRY_FOR_FREE_HREF = "/signup";
 
+/** Sales / demo inquiries — mailto with pre-filled subject. */
+export const LANDING_CONTACT_EMAIL = "info@enscribe.online";
+
+export function landingContactMailto(subject) {
+  const params = new URLSearchParams({ subject });
+  return `mailto:${LANDING_CONTACT_EMAIL}?${params.toString()}`;
+}
+
+export const LANDING_BOOK_DEMO_MAILTO = landingContactMailto("Book a demo");
+export const LANDING_CONTACT_US_MAILTO = landingContactMailto("Interested in EnScribe Enterprise plan");
+
 /** Full landing preview (no WIP gate on lower sections). */
 export const LANDING_FULL_PREVIEW_HREF = "/landing-page";
 
@@ -165,7 +176,7 @@ export const PRICING_TIERS = [
     price: "Custom",
     blurb: "Customized solutions for multi-provider practices.",
     cta: "Contact us",
-    href: "/contact",
+    href: LANDING_CONTACT_US_MAILTO,
     highlight: false,
   },
 ];

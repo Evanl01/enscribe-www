@@ -1,7 +1,11 @@
 "use client";
 
 import { AppLink } from "@/components/landing/app-link";
-import { LANDING_TRY_FOR_FREE_HREF, SERIF } from "@/components/landing/constants";
+import {
+  LANDING_BOOK_DEMO_MAILTO,
+  LANDING_TRY_FOR_FREE_HREF,
+  SERIF,
+} from "@/components/landing/constants";
 
 export function FinalCtaSection() {
   return (
@@ -19,12 +23,12 @@ export function FinalCtaSection() {
           >
             Try for free
           </AppLink>
-          <AppLink
-            href="/login"
+          <a
+            href={LANDING_BOOK_DEMO_MAILTO}
             className="inline-flex justify-center rounded-xl border border-[#183278]/20 bg-white px-7 py-4 text-base font-semibold text-[#183278] transition hover:border-[#183278]/35"
           >
             Book a demo
-          </AppLink>
+          </a>
         </div>
       </div>
     </section>
