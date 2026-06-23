@@ -144,6 +144,26 @@
   min-width: 0;
 }
 
+.feature-scroll-step-copy h3 {
+  font-size: 1.65rem;
+  line-height: 1.25;
+}
+
+.feature-scroll-step-copy p {
+  font-size: 1.2375rem;
+  line-height: 1.625;
+}
+
+@media (min-width: 640px) {
+  .feature-scroll-step-copy h3 {
+    font-size: 2.0625rem;
+  }
+
+  .feature-scroll-step-copy p {
+    font-size: 1.375rem;
+  }
+}
+
 .feature-scroll-step-visual-col {
   min-width: 0;
 }
