@@ -164,7 +164,7 @@ export const PRICING_TIERS = [
     highlight: false,
   },
   {
-    name: "AI Clinical Assistant",
+    name: "Clinical",
     price: "$20",
     blurb: "Unlimited AI Clinical Assistant for everyday clinical support.",
     cta: "Get started",
@@ -174,7 +174,8 @@ export const PRICING_TIERS = [
   {
     name: "Pro",
     price: "$49",
-    blurb: "Unlimited AI scribe usage with powerful automation, templates, and EHR integrations.",
+    blurb:
+      "Unlimited usage across AI Clinical Assistant, AI scribe and Pre-Visit Prep.",
     cta: "Get started",
     href: "/signup",
     highlight: true,
