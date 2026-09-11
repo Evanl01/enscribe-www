@@ -7,7 +7,7 @@ import { FeatureScrollPathSection } from "@/components/landing/feature-scroll-pa
 import { SmallPracticesSection } from "@/components/landing/small-practices-section";
 import { ClinicianQuoteBands } from "@/components/landing/clinician-quote-bands";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
-import { StatsSection } from "@/components/landing/stats-section";
+// import { StatsSection } from "@/components/landing/stats-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { FinalCtaSection } from "@/components/landing/final-cta-section";
 import { BetaOnly } from "@/components/beta-only";
@@ -47,7 +47,7 @@ export function LandingPage2() {
               <TestimonialsSection />
             </>
           </BetaOnly>
-          <StatsSection />
+          {/* <StatsSection /> */}
           <PricingSection />
           <FinalCtaSection />
         </div>

@@ -120,7 +120,7 @@ export const FEATURES = [
     key: "ehr",
     title: "EHR integration",
     blurb:
-      "Propogate notes to your EHR with one click — it's simple and efficient.",
+      "Cut and paste, in seconds. Integration with Practice Fusion.",
     label: "One-click push to EHR",
     spec: "Screenshot: completed note with “Send to EHR” button, connector chips (Epic, Athena, Elation placeholders).",
     media: "mockup",
@@ -158,8 +158,16 @@ export const PRICING_TIERS = [
   {
     name: "Free",
     price: "$0",
-    blurb: "Get started with AI scribing and note generation at no cost.",
+    blurb: "Basic AI scribing and note generation at no cost.",
     cta: "Try for free",
+    href: "/signup",
+    highlight: false,
+  },
+  {
+    name: "AI Clinical Assistant",
+    price: "$20",
+    blurb: "Unlimited AI Clinical Assistant for everyday clinical support.",
+    cta: "Get started",
     href: "/signup",
     highlight: false,
   },

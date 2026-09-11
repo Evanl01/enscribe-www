@@ -204,12 +204,6 @@ function HeroTrustBadges() {
             </span>
           ))}
         </div>
-        <p className="text-lg text-white/85">
-          <span className="text-white/65">Trusted by </span>
-          <span className="font-semibold text-white" style={SERIF}>
-            14k+ Clinicians
-          </span>
-        </p>
       </div>
     </div>
   );
@@ -247,7 +241,8 @@ export function VideoHeroSection() {
         >
           <h1
             className="text-4xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl"
-            style={{ ...SERIF, maxWidth: "100%" }}
+            style={{ ...SERIF, maxWidth: "100%", visibility: "hidden" }}
+            aria-hidden
           >
             Generate charts,
             <br />

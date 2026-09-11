@@ -25,13 +25,13 @@ export function PricingSection() {
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-4">
           {PRICING_TIERS.map((t) => {
             const cadence = t.price.startsWith("$") ? "/mo" : "";
             return (
               <div
                 key={t.name}
-                className={`relative flex flex-col rounded-2xl border p-6 transition ${
+                className={`relative flex h-full flex-col rounded-2xl border p-6 transition ${
                   t.highlight
                     ? "border-[#3166F7] bg-white shadow-[0_24px_50px_rgba(49,102,247,0.18)]"
                     : "border-[#183278]/10 bg-white shadow-sm"
@@ -42,27 +42,29 @@ export function PricingSection() {
                     Most popular
                   </span>
                 ) : null}
-                <p className="text-sm font-semibold text-[#4B5D99]">{t.name}</p>
-                <p className="mt-4 flex items-baseline gap-1">
-                  <span
-                    className="text-4xl font-semibold text-[#183278]"
-                    style={SERIF}
-                  >
-                    {t.price}
-                  </span>
-                  {cadence ? (
-                    <span className="text-sm font-medium text-[#4B5D99]">
-                      {cadence}
+                <div className="flex flex-1 flex-col">
+                  <p className="text-sm font-semibold text-[#4B5D99]">{t.name}</p>
+                  <p className="mt-4 flex items-baseline gap-1">
+                    <span
+                      className="text-4xl font-semibold text-[#183278]"
+                      style={SERIF}
+                    >
+                      {t.price}
                     </span>
-                  ) : null}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-[#3C4C78]">
-                  {t.blurb}
-                </p>
+                    {cadence ? (
+                      <span className="text-sm font-medium text-[#4B5D99]">
+                        {cadence}
+                      </span>
+                    ) : null}
+                  </p>
+                  <p className="mt-3 text-sm leading-relaxed text-[#3C4C78]">
+                    {t.blurb}
+                  </p>
+                </div>
                 {t.href.startsWith("mailto:") ? (
                   <a
                     href={t.href}
-                    className={`mt-6 inline-flex justify-center rounded-xl px-4 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 ${
+                    className={`mt-6 inline-flex w-full justify-center rounded-xl px-4 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 ${
                       t.highlight
                         ? "bg-[#3166F7] text-white hover:bg-[#2751C4]"
                         : "border border-[#183278]/15 bg-white text-[#183278] hover:border-[#183278]/35"
@@ -73,7 +75,7 @@ export function PricingSection() {
                 ) : (
                   <AppLink
                     href={t.href}
-                    className={`mt-6 inline-flex justify-center rounded-xl px-4 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 ${
+                    className={`mt-6 inline-flex w-full justify-center rounded-xl px-4 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3166F7] focus-visible:ring-offset-2 ${
                       t.highlight
                         ? "bg-[#3166F7] text-white hover:bg-[#2751C4]"
                         : "border border-[#183278]/15 bg-white text-[#183278] hover:border-[#183278]/35"
